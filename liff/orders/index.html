@@ -102,6 +102,9 @@ input[type="date"] { -webkit-appearance: none; appearance: none; min-height: 44p
 .two { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 h2, h3, b, small, dd, .note, .bank, .o div, .order div { overflow-wrap: anywhere; }
 input, select, textarea { font-size: 16px !important; }
+.wrap, .card { grid-template-columns: minmax(0, 1fr); }
+.card > * { min-width: 0; }
+.photo, .ph { width: 100%; max-width: 100%; }
 </style>
 </head>
 <body>
@@ -135,6 +138,6 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261112-hf"></script>
+<script src="app.js?v=20261113-w"></script>
 </body>
 </html>

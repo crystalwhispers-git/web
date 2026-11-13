@@ -117,6 +117,9 @@ summary { cursor: pointer; font-size: .9rem; color: var(--muted); }
 .pillars span { font-family: var(--display); font-size: 1.5rem; line-height: 1.15; }
 .status { text-align: center; font-size: .8rem; color: var(--muted); margin: 0; }
 input, select, textarea { font-size: 16px !important; }
+.wrap, .card { grid-template-columns: minmax(0, 1fr); }
+.card > * { min-width: 0; }
+.photo, .ph { width: 100%; max-width: 100%; }
 </style>
 </head>
 <body>
@@ -187,6 +190,6 @@ input, select, textarea { font-size: 16px !important; }
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
 <script src="lib/wuxing.js?v=20261111-2"></script>
-<script src="app.js?v=20261112-hf"></script>
+<script src="app.js?v=20261113-w"></script>
 </body>
 </html>
