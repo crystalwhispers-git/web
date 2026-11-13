@@ -74,6 +74,13 @@ input, select, textarea { font-size: 16px !important; }
 .wrap, .card { grid-template-columns: minmax(0, 1fr); }
 .card > * { min-width: 0; }
 .photo, .ph { width: 100%; max-width: 100%; }
+.wx { display: inline-block; font-size: .75rem; font-weight: 700; border-radius: 999px; padding: 1px 9px; color: #fff; line-height: 1.6; }
+.wx.wx-金 { background: #c9a227; color: #2b2100; } .wx.wx-木 { background: #2f855a; color: #fff; } .wx.wx-水 { background: #2b6cb0; color: #fff; } .wx.wx-火 { background: #c53030; color: #fff; } .wx.wx-土 { background: #8b5e34; color: #fff; }
+.chip.wxc[aria-pressed="true"] { border-color: transparent; }
+.chip.wxc.wx-金[aria-pressed="true"] { background: #c9a227; color: #2b2100; } .chip.wxc.wx-木[aria-pressed="true"] { background: #2f855a; color: #fff; }
+.chip.wxc.wx-水[aria-pressed="true"] { background: #2b6cb0; color: #fff; } .chip.wxc.wx-火[aria-pressed="true"] { background: #c53030; color: #fff; }
+.chip.wxc.wx-土[aria-pressed="true"] { background: #8b5e34; color: #fff; }
+.chip.wxc:not([aria-pressed="true"]) { background: var(--card); color: inherit; }
 </style>
 </head>
 <body>
@@ -109,6 +116,9 @@ input, select, textarea { font-size: 16px !important; }
 <div class="chips" id="cats"></div>
 <div class="addcat"><input id="newCat" placeholder="新增分類" maxlength="30"><button type="button" class="btn ghost" id="addCat">加入</button></div>
 </div>
+<div class="f" style="display:grid;gap:6px;font-size:.88rem;color:var(--muted)">五行（可複選，再按一次取消）
+<div class="chips" id="wx" role="group" aria-label="五行"></div>
+</div>
 <label class="f">說明<textarea id="text" maxlength="1800" placeholder="材質、尺寸、適合誰、怎麼搭配…"></textarea></label>
 <p class="meta" id="meta"></p>
 <div class="row">
@@ -123,6 +133,6 @@ input, select, textarea { font-size: 16px !important; }
 </form>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261113-img"></script>
+<script src="app.js?v=20261113-wx"></script>
 </body>
 </html>
