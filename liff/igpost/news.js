@@ -14,8 +14,8 @@ try { setKind(localStorage.getItem("igpost-kind") === "news" ? "news" : "product
 // 本機預覽用的示範資料
 Object.assign(DEMO, {
   news: { items: [
-    { title: "黃仁勳演講談團隊裡的女性主管", date: "2026-11-02", source: "示範新聞台", summary: "（示範資料）黃仁勳在一場演講中提到，公司裡很多關鍵決定來自女性主管，並鼓勵年輕女性勇敢爭取舞台。", angle: "被看見之前，先相信自己值得", links: [{ uri: "https://example.com/a", title: "example.com" }] },
-    { title: "黃仁勳回憶創業初期的低潮", date: "2026-10-28", source: "示範日報", summary: "（示範資料）談到創業初期公司差點倒閉，他說最難的不是技術，而是撐住不放棄。", angle: "低潮不是終點，是轉彎", links: [] },
+    { title: "黃仁勳演講談團隊裡的女性主管", date: "2026-11-02", source: "示範新聞台", summary: "（示範資料）黃仁勳在一場演講中提到，公司裡很多關鍵決定來自女性主管，並鼓勵年輕女性勇敢爭取舞台。", angle: "被看見之前，先相信自己值得", outline: ["開場：「很多關鍵決定來自女性主管」這句話", "觀點：位子不是等來的，先相信自己值得", "結尾：你最近一次替自己爭取是什麼時候？"], links: [{ uri: "https://example.com/a", title: "example.com" }] },
+    { title: "黃仁勳回憶創業初期的低潮", date: "2026-10-28", source: "示範日報", summary: "（示範資料）談到創業初期公司差點倒閉，他說最難的不是技術，而是撐住不放棄。", angle: "低潮不是終點，是轉彎", outline: ["開場：公司差點倒閉的那一年", "觀點：最難的是撐住，不是技術", "結尾：你正在撐的那件事，值得"], links: [] },
     { title: "黃仁勳穿皮衣的堅持", date: "2026-10-20", source: "示範週刊", summary: "（示範資料）記者問他為什麼永遠穿皮衣，他回答把力氣留給真正重要的決定。", angle: "簡單，是把力氣留給重要的事", links: [] },
   ], sources: [{ uri: "https://example.com/a", title: "example.com" }, { uri: "https://example.com/b", title: "example.org" }] },
   npost: {
@@ -68,10 +68,13 @@ function renderNews() {
     <span class="meta">${esc([it.date, it.source].filter(Boolean).join("・"))}</span>
     ${it.summary ? `<p>${esc(it.summary)}</p>` : ""}
     ${it.angle ? `<small>可以談：${esc(it.angle)}</small>` : ""}
+    <label class="lab" for="ol${i}">初步大綱（可以先改再寫）</label>
+    <textarea id="ol${i}" class="ol" data-i="${i}" rows="3">${esc(it.outlineText)}</textarea>
     ${(it.links || []).length ? `<div class="links">${it.links.map(linkHtml).join("")}</div>` : ""}
     <div class="row"><button type="button" class="copy use" data-i="${i}">${i === nstate.pick ? "正在用這則 · 再按一次重寫" : "用這則寫 →"}</button></div>
   </div>`).join("");
   document.querySelectorAll("#news .use").forEach(b => { b.onclick = () => npick(+b.dataset.i); b.disabled = nbusy; });
+  document.querySelectorAll("#news .ol").forEach(t => t.oninput = () => { nstate.items[+t.dataset.i].outlineText = t.value; });
   const src = (nstate.sources || []).map(linkHtml).filter(Boolean);
   $("nsrcBox").hidden = !src.length;
   $("nsrc").innerHTML = src.join("");
@@ -98,10 +101,11 @@ $("nf").onsubmit = async ev => {
   if (!event || nbusy) return;
   try { localStorage.setItem("igpost-event", event); } catch {}
   const my = ++nseq;
-  nsetBusy(true); nwait("nst1", "正在上網找近期新聞…（約 10–30 秒）");
+  nsetBusy(true); nwait("nst1", "正在上網找近期新聞、擬大綱…（約 10–20 秒）");
   try {
     const r = await call({ mode: "news", concept: event });
-    const items = (r?.items || []).filter(it => it && it.title).slice(0, 5);
+    const items = (r?.items || []).filter(it => it && it.title).slice(0, 5)
+      .map(it => ({ ...it, outlineText: (Array.isArray(it.outline) ? it.outline : []).join("\n") }));
     if (my !== nseq) return;
     nsetBusy(false);
     if (!items.length) { status("nst1", "找不到相關的近期新聞，換個說法（例如加上人名或時間）再試一次。", "err"); return; }
@@ -122,7 +126,7 @@ async function npick(i) {
   $("n3").scrollIntoView({ behavior: "smooth", block: "start" });
   nsetBusy(true); nwait("nst3", "正在寫 50 字和 100 字兩個版本…（約 5–15 秒）");
   try {
-    const r = await call({ mode: "npost", concept: s.event, ntitle: it.title, ndate: it.date || "", nsource: it.source || "", nsummary: it.summary || "", nangle: it.angle || "" });
+    const r = await call({ mode: "npost", concept: s.event, ntitle: it.title, ndate: it.date || "", nsource: it.source || "", nsummary: it.summary || "", nangle: it.angle || "", noutline: (it.outlineText || "").trim() });
     if (!r?.body50 && !r?.body100) throw { code: "server" };
     if (nstate !== s) return;
     // 換了一則新聞就是新的一篇，喜好庫另存新的一筆

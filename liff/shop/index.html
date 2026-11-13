@@ -109,8 +109,15 @@ input, select, textarea { font-size: 16px !important; }
 .ph .wxs { position: absolute; right: 8px; top: 8px; z-index: 1; display: flex; gap: 4px; }
 .ph .wx { box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 .cats .wx { font-size: .78rem; padding: 2px 10px; }
-.sortbar { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted); }
-.sortbar .chip { padding: 4px 12px; font-size: .82rem; }
+.wxbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wxbar .lbl { font-size: .85rem; color: var(--muted); margin-right: 2px; }
+.wxbar .chip { min-width: 44px; font-weight: 700; padding: 6px 12px; }
+.chip.wxc.wx-金 { color: #a3800f; border-color: #c9a227; } .chip.wxc.wx-木 { color: #2f855a; border-color: #2f855a; }
+.chip.wxc.wx-水 { color: #2b6cb0; border-color: #2b6cb0; } .chip.wxc.wx-火 { color: #c53030; border-color: #c53030; }
+.chip.wxc.wx-土 { color: #8b5e34; border-color: #8b5e34; }
+.chip.wxc.wx-金[aria-pressed="true"] { background: #c9a227; color: #2b2100; } .chip.wxc.wx-木[aria-pressed="true"] { background: #2f855a; color: #fff; }
+.chip.wxc.wx-水[aria-pressed="true"] { background: #2b6cb0; color: #fff; } .chip.wxc.wx-火[aria-pressed="true"] { background: #c53030; color: #fff; }
+.chip.wxc.wx-土[aria-pressed="true"] { background: #8b5e34; color: #fff; }
 </style>
 </head>
 <body>
@@ -128,10 +135,7 @@ input, select, textarea { font-size: 16px !important; }
 <button type="button" class="icon-btn" id="ordersBtn">📦 我的訂單</button>
 </div>
 <div class="chips" id="chips" role="group" aria-label="分類" hidden></div>
-<div class="sortbar" id="sortbar" role="group" aria-label="排序" hidden>排序
-<button type="button" class="chip" data-o="" aria-pressed="true">預設</button>
-<button type="button" class="chip" data-o="wx" aria-pressed="false">依五行（金木水火土）</button>
-</div>
+<div class="wxbar" id="wxbar" role="group" aria-label="五行篩選" hidden></div>
 <div class="msg" id="msg">載入中…</div>
 <div class="grid" id="grid" hidden></div>
 </div>
@@ -162,6 +166,6 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261113-wx"></script>
+<script src="app.js?v=20261113-wxf"></script>
 </body>
 </html>

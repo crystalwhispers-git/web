@@ -75,6 +75,7 @@ body[data-kind="news"] .k-product, body:not([data-kind="news"]) .k-news { displa
 .nw .meta { color: var(--muted); font-size: .8rem; }
 .nw p { margin: 0; font-size: .9rem; overflow-wrap: anywhere; }
 .nw small { color: var(--muted); font-size: .84rem; }
+.nw .ol { font-size: 16px; line-height: 1.6; padding: 8px 10px; }
 .nw[aria-current="true"] { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); background: var(--brand-soft); }
 .links { display: flex; flex-wrap: wrap; gap: 6px; }
 .links a, .srcs a { font-size: .8rem; color: var(--brand); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; text-decoration: none; overflow-wrap: anywhere; }
@@ -152,7 +153,7 @@ body[data-kind="news"] .k-product, body:not([data-kind="news"]) .k-news { displa
 </form>
 <section class="card k-news" id="n2" hidden>
 <h2 class="step"><i>2</i>挑一則新聞</h2>
-<p class="hint">可以點來源連結確認是不是你要的那件事，再按「用這則寫」。</p>
+<p class="hint">每則附一份初步大綱，可以先改。點來源連結確認是你要的那件事，再按「用這則寫」，會照大綱寫 50／100 字兩版。</p>
 <div class="titles" id="news"></div>
 <div class="field" id="nsrcBox" hidden><span class="lab">這次搜尋參考的網頁</span><div class="srcs" id="nsrc"></div></div>
 </section>
@@ -184,6 +185,6 @@ body[data-kind="news"] .k-product, body:not([data-kind="news"]) .k-news { displa
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="../video/topics.js?v=20261113"></script>
 <script src="app.js?v=20261113-2"></script>
-<script src="news.js?v=20261113-2"></script>
+<script src="news.js?v=20261113-3"></script>
 </body>
 </html>
