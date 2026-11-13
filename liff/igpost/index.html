@@ -82,10 +82,11 @@ textarea { resize: vertical; line-height: 1.7; }
 <div id="app" class="wrap" style="padding:0">
 <form class="card" id="f">
 <h2 class="step"><i>1</i>想寫什麼</h2>
+<div id="topicBox"></div>
 <div class="field">
 <label for="concept">基本概念</label>
 <input type="text" id="concept" placeholder="例如：寶石、情感" maxlength="200" autocomplete="off" required>
-<p class="hint">幾個關鍵字就可以，像「粉晶、桃花」「黑曜石、戴哪隻手」「缺火、紅色」。</p>
+<p class="hint">幾個關鍵字就可以，像「粉晶、桃花」「黑曜石、戴哪隻手」「缺火、紅色」；也可以從上面的題材庫挑一個方向。</p>
 </div>
 <div class="field">
 <span class="lab" id="lenLab">內文字數</span>
@@ -126,6 +127,7 @@ textarea { resize: vertical; line-height: 1.7; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261112"></script>
+<script src="../video/topics.js?v=20261113"></script>
+<script src="app.js?v=20261113"></script>
 </body>
 </html>
