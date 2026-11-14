@@ -64,7 +64,10 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .spec .chips { gap: 6px; }
 .spec .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
 .line .sp { font-size: .8rem; color: var(--muted); }
-.ask { display: grid; gap: 8px; background: var(--brand-soft); border-radius: 14px; padding: 12px; }
+.notes { display: grid; gap: 8px; }
+.onote { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; background: var(--brand-soft); border: 1px solid var(--brand); border-radius: 14px; padding: 10px 12px; font-size: .9rem; }
+.onote small { grid-column: 1; color: var(--muted); }
+.onote .x { grid-row: 1 / span 2; grid-column: 2; border: 0; background: var(--card); color: var(--brand); border-radius: 999px; padding: 4px 12px; font-size: .8rem; font-weight: 700; }
 .panel .body { padding: 16px; display: grid; gap: 10px; }
 .panel h2 { margin: 0; font-family: var(--display); font-size: 1.3rem; }
 .panel .price { font-size: 1.2rem; }
@@ -150,6 +153,7 @@ input, select, textarea { font-size: 16px !important; }
 <button type="button" class="icon-btn" id="cartBtn">🛒 購物車<b id="cartN" hidden>0</b></button>
 <button type="button" class="icon-btn" id="ordersBtn">📦 我的訂單</button>
 </div>
+<div class="notes" id="orderNotes" hidden></div>
 <div class="chips" id="chips" role="group" aria-label="分類" hidden></div>
 <div class="wxbar" id="wxbar" role="group" aria-label="五行篩選" hidden></div>
 <div class="msg" id="msg">載入中…</div>
@@ -172,12 +176,8 @@ input, select, textarea { font-size: 16px !important; }
 <button type="button" class="btn" id="dWant">加入購物車</button>
 </div>
 <p class="note" id="dAdded" role="status" aria-live="polite"></p>
-<button type="button" class="btn ghost" id="dAskBtn">💬 問這個商品</button>
-<div class="ask" id="dAsk" hidden>
-<label class="f">想問 Sammi 什麼？<textarea id="dQ" rows="3" maxlength="500" placeholder="例如：適合送人嗎？手圍不確定要選哪個…"></textarea></label>
-<button type="button" class="btn" id="dAskSend">送出問題</button>
-<p class="note" id="dAskMsg" role="status" aria-live="polite">Sammi 會在 LINE 聊天室回覆你，問題也會出現在你的聊天紀錄裡。</p>
-</div>
+<button type="button" class="btn ghost" id="dAskBtn">💬 問這個商品（到 LINE 聊天室）</button>
+<p class="note" id="dAskMsg" role="status" aria-live="polite"></p>
 </div>
 </div>
 </div>
@@ -189,6 +189,6 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261114-ask"></script>
+<script src="app.js?v=20261114-notice"></script>
 </body>
 </html>
