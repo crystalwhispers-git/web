@@ -65,6 +65,10 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .spec .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
 .line .sp { font-size: .8rem; color: var(--muted); }
 .notes { display: grid; gap: 8px; }
+.cvs { display: grid; gap: 8px; }
+.cvsrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cvsrow .lbl { font-size: .88rem; color: var(--muted); }
+.btn.small { padding: 6px 12px; font-size: .85rem; }
 .onote { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; background: var(--brand-soft); border: 1px solid var(--brand); border-radius: 14px; padding: 10px 12px; font-size: .9rem; }
 .onote small { grid-column: 1; color: var(--muted); }
 .onote .x { grid-row: 1 / span 2; grid-column: 2; border: 0; background: var(--card); color: var(--brand); border-radius: 999px; padding: 4px 12px; font-size: .8rem; font-weight: 700; }
@@ -189,6 +193,6 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261114-notice"></script>
+<script src="app.js?v=20261114-cvs"></script>
 </body>
 </html>
