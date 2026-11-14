@@ -120,6 +120,17 @@ input, select, textarea { font-size: 16px !important; }
 .wrap, .card { grid-template-columns: minmax(0, 1fr); }
 .card > * { min-width: 0; }
 .photo, .ph { width: 100%; max-width: 100%; }
+.admin-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-radius: 16px; background: var(--brand-soft); }
+.admin-bar > span { font-size: .82rem; color: var(--brand); font-weight: 700; }
+.admin-bar .seg { background: var(--card); }
+.picker { display: grid; gap: 6px; }
+.picker ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 220px; overflow-y: auto; }
+.picker li button { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 8px 12px; display: grid; line-height: 1.35; }
+.picker li small { color: var(--muted); font-size: .76rem; }
+.picker .empty { font-size: .82rem; color: var(--muted); padding: 4px 2px; }
+.chosen { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+.chosen span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chosen button { border: 0; background: none; color: var(--brand); font-size: .82rem; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -132,9 +143,24 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 <button type="button" class="theme-btn" id="theme" aria-label="切換深色模式"></button>
 </header>
+<div class="admin-bar" id="adminBar" hidden>
+<span>管理者</span>
+<div class="seg" role="group" aria-label="排盤對象">
+<button type="button" data-mode="self" aria-pressed="true">自己排</button>
+<button type="button" data-mode="proxy" aria-pressed="false">幫客人排</button>
+</div>
+</div>
 <form class="card" id="f" novalidate>
+<div class="field picker" id="picker" hidden>
+<span>選客人<small>從會員名冊搜尋；現場客人可以不選</small></span>
+<div class="chosen" id="chosen" hidden><span id="chosenName"></span><button type="button" id="unchoose">改選</button></div>
+<div id="finder">
+<input type="text" id="q" maxlength="30" placeholder="打姓名或 LINE 名稱" autocomplete="off" aria-label="搜尋客人">
+<ul id="found" aria-label="搜尋結果"></ul>
+</div>
+</div>
 <label class="field">
-<span>怎麼稱呼你<small>選填</small></span>
+<span id="nameLabel">怎麼稱呼你<small>選填</small></span>
 <input type="text" id="name" maxlength="20" placeholder="例如：小美" autocomplete="nickname">
 </label>
 <div class="field">
@@ -156,7 +182,8 @@ input, select, textarea { font-size: 16px !important; }
 <label class="exact">知道幾點幾分？<input type="time" id="time" aria-label="確切出生時間"></label>
 <p class="note" id="dstHint" hidden></p>
 </div>
-<label class="consent"><input type="checkbox" id="consent"> <span>我同意保存這次的生日與結果，讓 Sammi 為我推薦適合的水晶（沒勾選就不會保存）</span></label>
+<label class="consent" id="consentRow"><input type="checkbox" id="consent"> <span>我同意保存這次的生日與結果，讓 Sammi 為我推薦適合的水晶（沒勾選就不會保存）</span></label>
+<label class="consent" id="proxySaveRow" hidden><input type="checkbox" id="proxySave" checked> <span>保存到「生日五行紀錄」（選了客人就記在客人名下）</span></label>
 <p class="err" id="err" role="alert" hidden></p>
 <button class="cta" id="go" type="submit">看我的五行</button>
 </form>
@@ -175,7 +202,11 @@ input, select, textarea { font-size: 16px !important; }
 <h2 id="crystalTitle">適合你的水晶</h2>
 <div class="crystals" id="crystals"></div>
 <p class="note">水晶與五行的對應是民俗常見說法，配戴以喜歡、舒服為主。</p>
-<div class="actions">
+<div class="actions" id="proxyActions" hidden>
+<button type="button" class="cta" id="copy">複製結果，貼給客人</button>
+<button type="button" class="ghost" id="next">排下一位客人</button>
+</div>
+<div class="actions" id="selfActions">
 <a class="cta" id="ask" href="#" style="display:grid;place-items:center;text-decoration:none">問 Sammi 適合我的水晶</a>
 <button type="button" class="ghost" id="share">分享給朋友測測看</button>
 </div>
@@ -190,6 +221,6 @@ input, select, textarea { font-size: 16px !important; }
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
 <script src="lib/wuxing.js?v=20261111-2"></script>
-<script src="app.js?v=20261113-w"></script>
+<script src="app.js?v=20261114-p"></script>
 </body>
 </html>
