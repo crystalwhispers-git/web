@@ -124,7 +124,14 @@ input, select, textarea { font-size: 16px !important; }
 .admin-bar > span { font-size: .82rem; color: var(--brand); font-weight: 700; }
 .admin-bar .seg { background: var(--card); }
 .picker { display: grid; gap: 6px; }
-.picker ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 220px; overflow-y: auto; }
+.qrow { display: flex; gap: 6px; }
+.qrow input { flex: 1; min-width: 0; }
+.qrow button { flex: none; height: 44px; padding: 0 10px 0 12px; border: 1.5px solid var(--brand); border-radius: 12px; background: var(--card); color: var(--brand); font-size: .86rem; font-weight: 700; display: inline-flex; align-items: center; gap: 2px; }
+.qrow button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+.qrow button[aria-expanded="true"] { background: var(--brand); color: var(--on-brand); }
+.qrow button[aria-expanded="true"] svg { transform: rotate(180deg); }
+#found:empty { display: none; }
+.picker ul { margin-top: 6px !important; list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 220px; overflow-y: auto; }
 .picker li button { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 8px 12px; display: grid; line-height: 1.35; }
 .picker li small { color: var(--muted); font-size: .76rem; }
 .picker .empty { font-size: .82rem; color: var(--muted); padding: 4px 2px; }
@@ -155,7 +162,10 @@ input, select, textarea { font-size: 16px !important; }
 <span>選客人<small>從會員名冊搜尋；現場客人可以不選</small></span>
 <div class="chosen" id="chosen" hidden><span id="chosenName"></span><button type="button" id="unchoose">改選</button></div>
 <div id="finder">
-<input type="text" id="q" maxlength="30" placeholder="打姓名或 LINE 名稱" autocomplete="off" aria-label="搜尋客人">
+<div class="qrow">
+<input type="text" id="q" maxlength="30" placeholder="打姓名或 LINE 名稱搜尋" autocomplete="off" aria-label="搜尋客人">
+<button type="button" id="listAll" aria-expanded="false" aria-controls="found">客人列表<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+</div>
 <ul id="found" aria-label="搜尋結果"></ul>
 </div>
 </div>
@@ -221,6 +231,6 @@ input, select, textarea { font-size: 16px !important; }
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
 <script src="lib/wuxing.js?v=20261111-2"></script>
-<script src="app.js?v=20261114-p"></script>
+<script src="app.js?v=20261114-q"></script>
 </body>
 </html>
