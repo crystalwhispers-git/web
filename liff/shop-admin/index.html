@@ -55,6 +55,16 @@ label.f textarea { min-height: 110px; resize: vertical; }
 .photo { position: relative; aspect-ratio: 1 / 1; border-radius: 16px; border: 2px dashed var(--line); background: var(--brand-soft); display: grid; place-items: center; overflow: hidden; color: var(--brand); text-align: center; }
 .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .photo input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.gal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.gal .g { position: relative; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: var(--brand-soft); border: 2px solid transparent; }
+.gal .g.cover { border-color: var(--brand); }
+.gal .g img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gal .g .tag { position: absolute; left: 4px; top: 4px; font-size: .7rem; font-weight: 700; border-radius: 999px; padding: 0 8px; background: var(--brand); color: var(--on-brand); }
+.gal .g .acts { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; gap: 4px; padding: 4px; background: linear-gradient(transparent, rgba(0,0,0,.55)); }
+.gal .g .acts button { border: 0; border-radius: 999px; padding: 2px 8px; white-space: nowrap; font-size: .72rem; background: rgba(255,255,255,.92); color: #241B2F; }
+.gal .add { position: relative; aspect-ratio: 1 / 1; border-radius: 12px; border: 2px dashed var(--line); background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; text-align: center; font-size: .8rem; }
+.gal .add input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.hint { font-size: .78rem; color: var(--muted); margin: 0; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: .88rem; }
 .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
@@ -101,10 +111,9 @@ input, select, textarea { font-size: 16px !important; }
 <div class="list" id="list"></div>
 </section>
 <form class="card" id="form" hidden novalidate>
-<div class="photo" id="photoBox">
-<span id="photoHint">📷<br>點這裡拍照或選照片</span>
-<img id="photoImg" alt="" hidden>
-<input type="file" id="photoInput" accept="image/*" aria-label="商品照片">
+<div class="f" style="display:grid;gap:6px;font-size:.88rem;color:var(--muted)">照片（最多 5 張，第一張是封面）
+<div class="gal" id="gal"></div>
+<p class="hint">按「設封面」換封面；商城列表只顯示封面，點進商品可以左右滑看全部。</p>
 </div>
 <label class="f">名稱<input id="name" maxlength="100" required></label>
 <div class="two">
@@ -118,6 +127,12 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 <div class="f" style="display:grid;gap:6px;font-size:.88rem;color:var(--muted)">五行（可複選，再按一次取消）
 <div class="chips" id="wx" role="group" aria-label="五行"></div>
+</div>
+<div class="f" style="display:grid;gap:6px;font-size:.88rem;color:var(--muted)">手鍊尺寸（客人下單時選；都不勾＝不用選）
+<div class="chips" id="sizes" role="group" aria-label="手鍊尺寸"></div>
+</div>
+<div class="f" style="display:grid;gap:6px;font-size:.88rem;color:var(--muted)">珠子直徑（客人下單時選；都不勾＝不用選）
+<div class="chips" id="beads" role="group" aria-label="珠子直徑"></div>
 </div>
 <label class="f">說明<textarea id="text" maxlength="1800" placeholder="材質、尺寸、適合誰、怎麼搭配…"></textarea></label>
 <p class="meta" id="meta"></p>
@@ -133,6 +148,6 @@ input, select, textarea { font-size: 16px !important; }
 </form>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261113-wx"></script>
+<script src="app.js?v=20261114-gal"></script>
 </body>
 </html>

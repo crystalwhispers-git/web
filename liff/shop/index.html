@@ -53,6 +53,17 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .sheet { position: fixed; inset: 0; background: rgba(20,14,28,.45); display: grid; align-items: end; z-index: 10; }
 .panel { background: var(--card); border-radius: 22px 22px 0 0; max-height: 92vh; overflow-y: auto; width: 100%; max-width: 640px; margin: 0 auto; padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
 .panel .ph { aspect-ratio: 1 / 1; }
+.slides { position: absolute; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.slides::-webkit-scrollbar { display: none; }
+.slides .sl { position: relative; flex: 0 0 100%; scroll-snap-align: center; display: grid; place-items: center; }
+.dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.6); box-shadow: 0 0 2px rgba(0,0,0,.4); }
+.dots i.on { background: #fff; width: 16px; border-radius: 4px; }
+.spec { display: grid; gap: 6px; }
+.spec .lbl { font-size: .85rem; color: var(--muted); }
+.spec .chips { gap: 6px; }
+.spec .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.line .sp { font-size: .8rem; color: var(--muted); }
 .panel .body { padding: 16px; display: grid; gap: 10px; }
 .panel h2 { margin: 0; font-family: var(--display); font-size: 1.3rem; }
 .panel .price { font-size: 1.2rem; }
@@ -149,6 +160,7 @@ input, select, textarea { font-size: 16px !important; }
 <div class="cats" id="dCats"></div>
 <dl class="facts" id="dFacts"></dl>
 <p class="desc" id="dText"></p>
+<div class="spec" id="dSpec" hidden></div>
 <div style="display:flex;align-items:center;gap:12px"><span class="note">數量</span>
 <div class="qty"><button type="button" id="dMinus" aria-label="減少">−</button><span id="dQty">1</span><button type="button" id="dPlus" aria-label="增加">＋</button></div></div>
 <div class="actions">
@@ -166,6 +178,6 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261113-wxf"></script>
+<script src="app.js?v=20261114-spec"></script>
 </body>
 </html>
