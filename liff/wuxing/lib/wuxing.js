@@ -1,4 +1,10 @@
-/* 生日五行（加權）＋日主旺衰與用神（滴天髓扶抑法）＋台灣夏令時間修正：Crystal Whispers 水晶呢喃
+/* 生日五行（加權分布）＋日主強弱與平衡五行（參考扶抑觀念的日主強弱評分）＋台灣夏令時間修正：Crystal Whispers 水晶呢喃
+   2026-11-16 依 Notion「本站的五行計算方式」最下方 ChatGPT 核對意見修改：
+   - 不再用分數自動判定從強／從弱（從格要看整體結構），改標「極強／極弱」＋「疑似特殊格局」，喜用照一般扶抑方向
+   - 「缺行」分兩種：0 分＝沒有出現；大於 0、低於 5%＝很少（占比低不等於不存在）
+   - 調候改成季節提示，不直接說「喜火／喜水」；和忌神衝突時另外標示
+   - 不知道時辰、出生當天交節：標成暫估
+   藏干權重用本檔的 HIDDEN 表順序（不是 lunar-javascript 的藏干陣列），例如巳＝丙 0.6、戊 0.3、庚 0.1。
    八字用 lunar-javascript：年柱以立春、月柱以節的交節時刻為界；晚子時（23 點後）日柱算隔天（和流亡者排盤相同）。
    加權：天干每個 1 分；地支每個 1 分，依藏干拆開（本氣 0.6／中氣 0.3／餘氣 0.1，兩個藏干 0.7／0.3）；月支（月令）再乘 2。
    不知道時辰就只算年、月、日三柱。 */
@@ -75,26 +81,13 @@
     金: '你的本命屬「金」，就像質地堅硬飽滿的礦石與珠寶！因為金氣已經很充足，再一直堆疊反而顯得剛硬；這時候最需要的是清泉洗滌讓光芒流動（水）、適度淬煉成器（火），或是發揮決斷力的舞台（木），讓你的才華與魅力被看見。',
     水: '你的本命屬「水」，就像水量充沛的江河大海！因為水勢已經很滿，若再一直加水反而容易滿溢；這時候最需要的是去灌溉樹木、發揮才華（木）、陽光映照帶來溫暖行動力（火），或是穩固河道把能量聚集成踏實的成果（土）。',
   };
-  function buildStory(D, level, useEl, likeEl, weak, missing, tiao) {
+  function buildStory(D, level, useEl, likeEl, weak, missing, tiao, tiaoEl, avoidEl) {
     var favs = [useEl, likeEl].filter(function (e, i, a) { return e && a.indexOf(e) === i; });
     var isDiff = favs.indexOf(weak) < 0;
-    var weakText = missing && missing.length ? '幾乎沒有「' + missing.join('、') + '」' : '「' + weak + '」佔比最少';
+    // missing＝完全沒出現（0 分）的五行
+    var weakText = missing && missing.length ? '沒有出現「' + missing.join('、') + '」' : '「' + weak + '」佔比最少';
     var tag, lead, body, end;
-    if (level === '從強') {
-      tag = '能量飽滿凝聚・宜順勢加乘';
-      lead = isDiff
-        ? '很多人挑水晶習慣「缺什麼補什麼」，看到自己' + weakText + '就想直接補它。但八字看的是整體氣場的流向！'
-        : '挑選水晶不是單純湊齊數字，而是要順著你天生的能量優勢去加強。';
-      body = '你的命盤非常特別，幾乎所有能量都凝聚在本命「' + D + '」與生助你的力量上。這就像一股強大純粹的自然氣流，如果硬拿相剋的五行去擋它，反而會造成能量衝撞。';
-      end = '順著你天生的優勢，佩戴「' + favs.join('、') + '」系水晶來順勢加乘，反而最順遂自在！';
-    } else if (level === '從弱') {
-      tag = '能量靈活柔和・宜順勢借力';
-      lead = isDiff
-        ? '很多人挑水晶習慣「缺什麼補什麼」，看到自己' + weakText + '就想直接補它。但八字講究的是順應整體的氣場！'
-        : '挑選水晶不是單純把少的補滿，而是要看哪股能量最能帶動你的運勢。';
-      body = '你的命盤屬於非常靈活的「順勢型」格局，就像懂得借力使力的衝浪手——不需要硬撐著跟海浪對抗，順著命盤裡最旺、最順暢的能量去流動，反而最輕鬆好運。';
-      end = '因此最適合你的是「' + favs.join('、') + '」系水晶，幫你順勢借力、事半功倍！';
-    } else if (level === '身強' || level === '中和偏強') {
+    if (level === '身強' || level === '中和偏強' || level === '極強') {
       tag = '能量充沛・宜疏通發揮';
       lead = isDiff
         ? '很多人以為八字少什麼就要補什麼，看到上方圖表' + weakText + '，就會想直接買「' + weak + '」系水晶。其實看五行就像調養體質，不是數字少就硬塞喔！'
@@ -113,8 +106,15 @@
         ? '所以比起去補最少的「' + weak + '」，現在最適合你的是能幫你充電滋養的「' + favs.join('、') + '」系水晶！'
         : '而你命盤中較少的「' + weak + '」，剛好就是能幫你充電滋養的關鍵能量，非常適合透過「' + favs.join('、') + '」系水晶來補足底氣！';
     }
+    if (level === '極強' || level === '極弱') {
+      tag += '・結構特殊';
+      end += '（你的命盤能量分布比較極端，可能屬於特殊格局，電腦只依一般原則推算，建議和 Sammi 一對一確認。）';
+    }
+    // 調候只當季節提示；剛好是忌神時不給確定建議
     if (tiao) {
-      end += '（另外，你出生在' + (tiao.indexOf('冬') === 0 ? '冬季，氣場偏寒，也很適合搭配一點「火」系水晶來溫暖氣場。' : '夏季，氣場偏燥，也很適合搭配一點「水」系水晶來溫潤氣場。') + '）';
+      end += tiaoEl === avoidEl
+        ? '（另外，你出生在' + (tiaoEl === '火' ? '冬季，氣場偏寒' : '夏季，氣場偏燥') + '，季節上會想到「' + tiaoEl + '」，但它和上面的判讀方向不同，建議一對一再確認。）'
+        : '（另外，你出生在' + (tiaoEl === '火' ? '冬季，氣場偏寒，可以留意一點「火」的溫暖。' : '夏季，氣場偏燥，可以留意一點「水」的滋潤。') + '）';
     }
     return { tag: tag, lead: lead, body: body, end: end, isDiff: isDiff };
   }
@@ -131,37 +131,37 @@
     var same = score[D] - 1 + score[G.印];
     var ratio = total > 0 ? same / total : 0;
     var g = {}; Object.keys(G).forEach(function (k) { g[k] = k === '比劫' ? score[G[k]] - 1 : score[G[k]]; });
-    var level, use, like, avoid, why;
-    if (ratio >= 0.8) {
-      level = '從強';
-      use = g.比劫 >= g.印 ? '比劫' : '印'; like = use === '比劫' ? '印' : '比劫'; avoid = '官殺';
-      why = '命局幾乎都是幫你的力量，順著這股勢，用同類的五行最好，不宜硬去剋它。';
-    } else if (ratio < 0.2 && !roots.length) {
-      level = '從弱';
-      use = ['財', '官殺', '食傷'].sort(function (a, b) { return g[b] - g[a]; })[0];
-      like = use === '財' ? '食傷' : use === '官殺' ? '財' : '財'; avoid = '印';
-      why = '自己的力量很少又沒有根，順著命局最強的那股勢走，反而比較順。';
-    } else if (ratio >= 0.5) {
-      level = ratio >= 0.6 ? '身強' : '中和偏強';
+    var use, like, avoid, why;
+    // 區間（幫身比例 ratio，分母＝全部分數扣日主 1 分）：
+    //   ≥80% 極強｜60%–未滿 80% 身強｜50%–未滿 60% 中和偏強｜40%–未滿 50% 中和偏弱｜未滿 40% 身弱｜未滿 20% 且地支無根 極弱（先判）
+    // 極強／極弱只標「疑似特殊格局」，喜用照一般扶抑方向，不自動判從格、不反轉
+    var special = ratio >= 0.8 || (ratio < 0.2 && !roots.length);
+    var level;
+    if (ratio >= 0.5) {
+      level = ratio >= 0.8 ? '極強' : ratio >= 0.6 ? '身強' : '中和偏強';
       if (g.印 > g.比劫) { use = '財'; like = '食傷'; why = '幫你的力量以「印」為主，用財來平衡（財剋印）。'; }
       else if (g.官殺 >= 0.5) { use = '官殺'; like = '財'; why = '同類的力量多，用官殺來約束、讓力量有方向。'; }
       else { use = '食傷'; like = '財'; why = '同類的力量多，用食傷把能量發揮出去。'; }
       avoid = '印';
     } else {
-      level = ratio < 0.4 ? '身弱' : '中和偏弱';
+      level = ratio < 0.2 && !roots.length ? '極弱' : ratio < 0.4 ? '身弱' : '中和偏弱';
       var heavy = ['財', '官殺', '食傷'].sort(function (a, b) { return g[b] - g[a]; })[0];
       if (heavy === '財') { use = '比劫'; like = '印'; avoid = '官殺'; why = '壓力主要來自「財」，用同類的比劫幫身扛住。'; }
       else { use = '印'; like = '比劫'; avoid = '財'; why = heavy === '官殺' ? '壓力主要來自官殺，用印來化解並生扶自己。' : '力量被食傷洩得多，用印來補充、也制住食傷。'; }
     }
-    // 調候（寒暖燥濕）：冬天出生火太少、夏天出生水太少時另外提醒
-    var tiao = '';
+    // 調候（寒暖燥濕）只當季節提示：冬天出生火未滿 10%、夏天出生水未滿 10%；跟忌神衝突時標示「方向不同」
+    var tiao = '', tiaoEl = '';
     var pct = function (e) { return score[e] / (total + 1) * 100; };
-    if ('亥子丑'.indexOf(monthBr) >= 0 && pct('火') < 10) tiao = '冬天出生、命局偏寒，另外喜「火」來暖局。';
-    if ('巳午未'.indexOf(monthBr) >= 0 && pct('水') < 10) tiao = '夏天出生、命局偏燥，另外喜「水」來潤局。';
-    var story = buildStory(D, level, G[use], G[like], weak || '', missing || [], tiao);
+    if ('亥子丑'.indexOf(monthBr) >= 0 && pct('火') < 10) { tiaoEl = '火'; tiao = '冬天出生、命局偏寒，季節上可以留意「火」的溫暖。'; }
+    if ('巳午未'.indexOf(monthBr) >= 0 && pct('水') < 10) { tiaoEl = '水'; tiao = '夏天出生、命局偏燥，季節上可以留意「水」的滋潤。'; }
+    var tiaoConflict = !!tiaoEl && tiaoEl === G[avoid];
+    if (tiaoConflict) tiao += '但扶抑判讀把「' + tiaoEl + '」列為忌神，兩種看法方向不同，需要進一步確認。';
+    if (special) why += '（能量分布比較極端，可能是特殊格局，電腦不自動判定，建議一對一確認。）';
+    var story = buildStory(D, level, G[use], G[like], weak || '', missing || [], tiao, tiaoEl, G[avoid]);
     return {
       level: level, ratio: Math.round(ratio * 1000) / 10, season: season, deLing: deLing, roots: roots,
       use: G[use], useGod: use, like: G[like], likeGod: like, avoid: G[avoid], avoidGod: avoid, why: why, tiao: tiao, groups: G,
+      special: special, tiaoEl: tiaoEl, tiaoConflict: tiaoConflict,
       story: story,
     };
   }
@@ -218,7 +218,12 @@
     ELS.forEach(function (e) { pct[e] = Math.round(score[e] / total * 1000) / 10; });
     var order = ELS.slice().sort(function (a, b) { return score[b] - score[a]; });
     var dayStem = pillars[2].gz[0];
-    var missing = ELS.filter(function (e) { return pct[e] < 5; });
+    // 沒有出現（0 分，已含藏干）／很少（大於 0、未滿 5%）分開；占比低不等於不存在
+    var missing = ELS.filter(function (e) { return score[e] === 0; });
+    var low = ELS.filter(function (e) { return score[e] > 0 && score[e] / total < 0.05; });
+    // 暫估：不知道時辰（少一柱、晚子時日柱也可能不同）；或出生當天剛好交「節」又沒有確切時間（年柱／月柱可能不同）
+    var jie = solarDay.getLunar().getCurrentJie();
+    var jieDay = jie ? jie.getName().replace('惊蛰', '驚蟄').replace('芒种', '芒種') : '';
     return {
       solar: ymd,
       lunarText: (lunar.getYearInGanZhi() + '年 ' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()).replace(/闰/g, '閏').replace(/腊/g, '臘'),
@@ -230,6 +235,9 @@
       weak: order[4],
       weak2: order[3],
       missing: missing,
+      low: low,
+      jieDay: jieDay,
+      tentative: hour < 0 || (!!jieDay && !exact),
       dayMaster: { stem: dayStem, el: STEM_EL[dayStem], text: DAY_MASTER[dayStem] },
       power: strength(pillars, score, STEM_EL[dayStem], order[4], missing),
     };
