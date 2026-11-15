@@ -1,1 +1,674 @@
-const e=e=>document.getElementById(e),t=e=>String(e??"").replace(/[&<>"]/g,(e=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[e]))),a="2012526991-K2po91Aa",n="crystal-whispers-wuxing",l="@992tgwyb",o=location.hostname.endsWith("github.io")&&!0,i=["https://idly-junction-altitude.ngrok-free.dev"];async function s(e,t){let a,n=0;try{n=Math.max(0,i.indexOf(sessionStorage.getItem("n8n-host")))}catch{}for(let l=0;l<i.length;l++){const o=i[(n+l)%i.length];try{const n=await fetch(o+"/webhook/"+e,t);if(l<i.length-1&&n.status>=502&&n.status<=504){a=n;continue}try{sessionStorage.setItem("n8n-host",o)}catch{}return n}catch(e){if(e&&"AbortError"===e.name)throw e;a=e}}if(a instanceof Response)return a;throw a}const r={"木":"--wood","火":"--fire","土":"--earth","金":"--metal","水":"--water"},c=e=>`var(${r[e]})`,d=[{el:"木",name:"綠幽靈",text:"事業、貴人"},{el:"木",name:"綠東陵",text:"安定、好運"},{el:"木",name:"橄欖石",text:"自信、正向"},{el:"火",name:"粉晶",text:"人緣、愛情"},{el:"火",name:"紫水晶",text:"直覺、平靜"},{el:"火",name:"紅瑪瑙",text:"活力、勇氣"},{el:"土",name:"黃水晶",text:"財運、自信"},{el:"土",name:"黃虎眼",text:"專注、決斷"},{el:"土",name:"茶晶",text:"穩定、放鬆"},{el:"金",name:"白水晶",text:"淨化、專注"},{el:"金",name:"鈦晶",text:"魄力、正財"},{el:"金",name:"月光石",text:"溫柔、直覺"},{el:"水",name:"黑曜石",text:"守護、穩定"},{el:"水",name:"海藍寶",text:"溝通、平靜"},{el:"水",name:"青金石",text:"智慧、表達"}];let u=d;const m='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',h='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';function p(t){document.documentElement.dataset.theme=t,e("theme").innerHTML="dark"===t?m:h,e("theme").setAttribute("aria-label","dark"===t?"切換淺色模式":"切換深色模式")}let y="light";try{y="dark"===localStorage.getItem("wx-theme")?"dark":"light"}catch{}p(y),e("theme").onclick=()=>{y="dark"===y?"light":"dark",p(y);try{localStorage.setItem("wx-theme",y)}catch{}};let $="solar",g=-1,f=null,x=[],v="",w=!1,b=null;const k=new Date;function S(e,t,a,n,l){const o=l??e.value;e.innerHTML="";for(let l=t;l<=a;l++)e.add(new Option(n(l),l));o&&+o>=t&&+o<=a&&(e.value=o)}function M(){const t=+e("y").value,a=+e("m").value,n="solar"===$?new Date(t,a,0).getDate():30;S(e("d"),1,n,(e=>"solar"===$?e+" 日":T(e)))}S(e("y"),1930,k.getFullYear(),(e=>e+" 年"),1990);const L=["初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"],A=["正","二","三","四","五","六","七","八","九","十","冬","臘"],T=e=>L[e-1];function E(){S(e("m"),1,12,(e=>"solar"===$?e+" 月":A[e-1]+"月")),M()}e("y").onchange=M,e("m").onchange=M,document.querySelectorAll("[data-cal]").forEach((t=>t.onclick=()=>{$=t.dataset.cal,document.querySelectorAll("[data-cal]").forEach((e=>e.setAttribute("aria-pressed",String(e===t)))),e("leapRow").hidden="lunar"!==$,E()})),E(),e("hours").innerHTML=WuXing.HOURS.map(((e,t)=>`<button type="button" data-h="${t}" aria-pressed="false"><b>${e.name}</b><small>${e.range} 點</small></button>`)).join("")+'<button type="button" class="unknown" data-h="-1" aria-pressed="true"><b>不知道時辰</b><small>只用年月日計算</small></button>',e("hours").querySelectorAll("button").forEach((t=>t.onclick=()=>{g=+t.dataset.h,e("time").value="",e("hours").querySelectorAll("button").forEach((e=>e.setAttribute("aria-pressed",String(e===t)))),q()})),e("time").oninput=()=>{e("time").value&&e("hours").querySelectorAll("button").forEach((e=>e.setAttribute("aria-pressed","false"))),q()};const j=()=>({y:+e("y").value,m:+e("m").value,d:+e("d").value,lunar:"lunar"===$,leap:e("leap").checked,hour:g,time:e("time").value});function q(){let t=null;try{t=WuXing.calc({...j(),hour:-1,time:""})}catch{}const a=!!t?.dst;e("dstHint").hidden=!a,a&&(e("dstHint").textContent=`這天在${t.dst}期間，當時時鐘比標準時間快 1 小時。填「幾點幾分」會自動扣回；只選時辰的話，請選扣掉 1 小時後的時辰。`)}function C(a,n){const o=n?t(n)+"，你":"你",i=a.missing.length?`，<b style="color:${c(a.weak)}">${a.missing.join("、")}</b>幾乎沒有`:`，<b style="color:${c(a.weak)}">${a.weak}</b>比較弱`;e("summary").innerHTML=`${o}的五行<b style="color:${c(a.strong)}">${a.strong}</b>最旺${i}。`,H(a),e("bars").innerHTML=WuXing.ELS.map((e=>`<div class="bar"><b style="color:${c(e)}">${e}</b><i><span style="width:0;background:${c(e)}" data-w="${a.pct[e]}"></span></i><em>${a.pct[e]}%</em></div>`)).join("");const s=Math.max(...WuXing.ELS.map((e=>a.pct[e])));setTimeout((()=>e("bars").querySelectorAll("[data-w]").forEach((e=>e.style.width=Math.max(+e.dataset.w/s*100,2)+"%"))),40),e("hourNote").hidden=a.hour>=0,e("dstNote").hidden=!a.dst,e("dstNote").textContent=a.dst?a.corrected?`這天在${a.dst}期間，出生時間 ${a.clock} 已扣回 1 小時，以 ${a.corrected} 計算。`:`這天在${a.dst}期間，時鐘快 1 小時；請確認選的是扣回後的時辰。`:"";const r=a.dayMaster;e("dm").innerHTML=`<div class="stone" style="background:${c(r.el)}">${r.stem}</div>\n    <div><p><b>${r.stem}${r.el}</b>：${t(r.text)}</p><small>本命看出生那天的天干，代表你自己。</small></div>`;const d=a.power,m=(e,t,a)=>`<div class="god"><small>${e}</small><b style="color:${c(t)}">${t}</b><span>${a}</span></div>`;e("power").innerHTML=`<p class="level">${r.stem}${r.el}・${d.level}</p>\n    <div class="meter"><span style="width:0" data-w="${Math.min(d.ratio,100)}"></span></div>\n    <div class="meter-l"><span>幫你的力量（比劫＋印）${d.ratio}%</span><span>剋洩耗 ${Math.round(10*(100-d.ratio))/10}%</span></div>\n    <ul>\n      <li>出生月份：日主「${d.season}」，${d.deLing?"得令（當季有力）":"失令（不在當季）"}</li>\n      <li>${d.roots.length?"有根："+d.roots.join("、"):"地支沒有同五行的根"}</li>\n    </ul>\n    <div class="gods">${m("用神",d.use,d.useGod)}${m("喜神",d.like,d.likeGod)}${m("忌神",d.avoid,d.avoidGod)}</div>\n    <p class="why">${t(d.why)}${d.tiao?"<br>"+t(d.tiao):""}</p>`,setTimeout((()=>e("power").querySelectorAll("[data-w]").forEach((e=>e.style.width=e.dataset.w+"%"))),40);const h=[d.use,d.like].filter(((e,t,a)=>e&&a.indexOf(e)===t));e("crystalTitle").innerHTML=`適合你的水晶<span class="tag">依用神：${h.join("、")}</span>`;const p=h.flatMap(((e,t)=>u.filter((t=>t.el===e)).slice(0,0===t?3:2)));e("crystals").innerHTML=p.map((e=>`<div class="crystal">\n      <div class="dot" style="${e.image?`background-image:url('${t(e.image)}')`:`background:${c(e.el)}`}"></div>\n      <div><b>${t(e.name)}<span class="tag">${e.el}</span></b><small>${t(e.text)}${e.el,a.weak,""}</small></div>\n    </div>`)).join("")+`<p class="note">${h.map((e=>`${e}代表${WuXing.MEANING[e]}`)).join("；")}。</p>`;const y=`我的生日五行：${a.strong}最旺、${a.weak}比較弱，日主${r.stem}${r.el}${d.level}，用神${d.use}、喜神${d.like}，想請 Sammi 推薦適合我的水晶。`;return e("ask").href=`https://line.me/R/oaMessage/${l}/?${encodeURIComponent(y)}`,e("pillars").innerHTML=a.pillars.map((e=>`<div><small>${e.label}柱</small><span style="color:${c(WuXing.STEM_EL[e.gz[0]])}">${e.gz[0]}</span><span>${e.gz[1]}</span></div>`)).join(""),e("dateLine").textContent=`國曆 ${a.solar}・農曆 ${a.lunarText}・${a.clock?a.clock+"（"+a.hourName+"）":a.hourName}`,e("selfActions").hidden=w,e("proxyActions").hidden=!w,e("result").hidden=!1,e("result").scrollIntoView({behavior:"smooth",block:"start"}),p}function H(t){const a=Math.max(...WuXing.ELS.map((e=>t.pct[e])))||1,n=(e,t)=>{const a=(72*e-90)*Math.PI/180;return[t*Math.cos(a),t*Math.sin(a)]},l=WuXing.ELS.map(((e,l)=>n(l,92*Math.max(t.pct[e]/a,.04)))),o=e("radar");o.classList.remove("on"),o.innerHTML=[1/3,2/3,1].map((e=>`<polygon class="grid" points="${(e=>WuXing.ELS.map(((t,a)=>n(a,e).map((e=>e.toFixed(1))).join(","))).join(" "))(92*e)}"/>`)).join("")+WuXing.ELS.map(((e,t)=>{const[a,l]=n(t,92);return`<line class="axis" x1="0" y1="0" x2="${a.toFixed(1)}" y2="${l.toFixed(1)}"/>`})).join("")+`<g class="shape-g"><polygon class="shape" points="${l.map((e=>e.map((e=>e.toFixed(1))).join(","))).join(" ")}"/></g>`+WuXing.ELS.map(((e,a)=>{const[o,i]=l[a],[s,r]=n(a,118);return`<circle class="pt" cx="${o.toFixed(1)}" cy="${i.toFixed(1)}" r="4.5" style="fill:${c(e)}"/>\n        <text class="el" x="${s.toFixed(1)}" y="${(r-7).toFixed(1)}" style="fill:${c(e)}">${e}</text>\n        <text class="pc" x="${s.toFixed(1)}" y="${(r+9).toFixed(1)}">${t.pct[e]}%</text>`})).join(""),o.querySelectorAll(".pt").forEach((e=>{e.style.opacity=0,e.style.transition="opacity .3s .6s"})),setTimeout((()=>{o.classList.add("on"),o.querySelectorAll(".pt").forEach((e=>e.style.opacity=1))}),40)}function I(){try{return liff.getIDToken()||""}catch{return""}}async function N(e){const t=await s(n,{method:"POST",body:new URLSearchParams({...e,t:I()})});if(!t.ok)throw t.status;return t.json()}async function W(t,a,n,l){if(o){e("status").textContent="保存中…";try{await N({mode:"save",name:a,cal:n.lunar?n.leap?"農曆閏月":"農曆":"國曆",birth:`${n.y}-${n.m}-${n.d}`,solar:t.solar,hour:t.hourName,bazi:t.pillars.map((e=>e.gz)).join(" "),day_master:t.dayMaster.stem+t.dayMaster.el,pct:WuXing.ELS.map((e=>`${e} ${t.pct[e]}%`)).join("、"),wood:t.pct.木,fire:t.pct.火,earth:t.pct.土,metal:t.pct.金,water:t.pct.水,strong:t.strong,weak:t.weak,crystals:l.map((e=>e.name)).join("、"),time:t.clock,dst:t.dst?t.corrected?`${t.dst}，已扣回 1 小時（${t.corrected}）`:t.dst:"",level:t.power.level,ratio:t.power.ratio,use:t.power.use,like:t.power.like,avoid:t.power.avoid,...w?{proxy:"1",cust_uid:b?.uid||"",cust_line:b?.line||""}:{}}),e("status").textContent=w?b?`已保存，記在「${b.name||b.line}」名下。`:"已保存（沒有選名冊裡的客人，只記稱呼）。":"已保存，Sammi 會參考你的五行推薦水晶。"}catch{e("status").textContent="結果已經算好，但這次沒有保存成功。"}}else e("status").textContent="（本機預覽，不會保存）"}["y","m","d","leap"].forEach((t=>e(t).addEventListener("change",q))),e("f").onsubmit=async t=>{t.preventDefault(),e("err").hidden=!0;const a=j();let n;try{n=WuXing.calc(a)}catch{return e("err").textContent="lunar"===$?"這個農曆日期不存在，請檢查月份或閏月。":"這個日期不存在，請再檢查一次。",void(e("err").hidden=!1)}const l=e("name").value.trim(),o=C(n,l);if(f=n,x=o,v=l,w)e("proxySave").checked?W(n,l,a,o):e("status").textContent="這次沒有保存。";else{try{localStorage.setItem("wx-input",JSON.stringify({...a,cal:$,name:l}))}catch{}e("consent").checked&&W(n,l,a,o)}},e("share").onclick=async()=>{const t=a?`https://liff.line.me/${a}`:location.href;try{if(o&&liff.isApiAvailable("shareTargetPicker"))return void await liff.shareTargetPicker([{type:"text",text:`我剛測了生日五行，你也來看看自己的五行偏哪裡：\n${t}`}])}catch{}try{await navigator.clipboard.writeText(t),e("share").textContent="已複製連結"}catch{e("share").textContent=t}setTimeout((()=>e("share").textContent="分享給朋友測測看"),2e3)};const X=1990;function F(){e("f").reset(),document.querySelector('[data-cal="solar"]').click(),e("y").value=X,e("m").value=1,M(),e("d").value=1,e("hours").querySelector('[data-h="-1"]').click(),e("result").hidden=!0,e("status").textContent="",e("err").hidden=!0,z(null),e("q").value="",U()}function R(t){w="proxy"===t,document.querySelectorAll("[data-mode]").forEach((e=>e.setAttribute("aria-pressed",String(e.dataset.mode===t)))),e("picker").hidden=!w,e("consentRow").hidden=w,e("proxySaveRow").hidden=!w,e("nameLabel").innerHTML=w?"客人稱呼<small>選了客人會自動帶入，可以改</small>":"怎麼稱呼你<small>選填</small>",e("go").textContent=w?"排這位客人的五行":"看我的五行",e("heroLine").textContent=w?"幫客人排五行，結果可複製給客人":"輸入生日，看五行、強弱與用神",w?F():(e("result").hidden=!0,e("status").textContent="");try{localStorage.setItem("wx-mode",t)}catch{}}function z(t){b=t,e("chosen").hidden=!t,e("finder").hidden=!!t,t&&(U(),e("q").value="",e("chosenName").textContent=t.name&&t.line&&t.name!==t.line?`${t.name}（LINE：${t.line}）`:t.name||t.line,e("name").value=t.name||t.line)}document.querySelectorAll("[data-mode]").forEach((e=>e.onclick=()=>R(e.dataset.mode))),e("unchoose").onclick=()=>{z(null),e("name").value="",e("q").focus()};let O=0,P=0;function U(){P++,clearTimeout(O),e("found").innerHTML="",e("listAll").setAttribute("aria-expanded","false")}async function B(a){const n=++P;e("found").innerHTML='<li class="empty">搜尋中…</li>';let l=[];try{l=o?(await N({mode:"search",q:a})).items||[]:[{name:"王小美",line:"小美🌸",uid:"U-demo-1"},{name:"",line:"Amy",uid:"U-demo-2"}].filter((e=>!a||(e.name+e.line).includes(a)))}catch{return void(n===P&&(e("found").innerHTML='<li class="empty">名冊讀不到，可以先不選，直接填稱呼。</li>'))}n===P&&(e("found").innerHTML=l.length?l.map(((e,a)=>`<li><button type="button" data-i="${a}"><b>${t(e.name||e.line)}</b>${e.name&&e.line?`<small>LINE：${t(e.line)}</small>`:""}</button></li>`)).join(""):`<li class="empty">${a?"名冊裡找不到，可以不選，直接填稱呼。":"名冊裡還沒有客人。"}</li>`,e("found").querySelectorAll("button").forEach((e=>e.onclick=()=>z(l[+e.dataset.i]))))}function D(e,t,a){const n=e.power,l=e.dayMaster;return[`【生日五行】${t||""}`.trim(),`國曆 ${e.solar}・農曆 ${e.lunarText}・${e.clock?e.clock+"（"+e.hourName+"）":e.hourName}`,`八字：${e.pillars.map((e=>e.gz)).join(" ")}`,`五行：${WuXing.ELS.map((t=>`${t} ${e.pct[t]}%`)).join("、")}（${e.strong}最旺，${e.weak}較弱）`,`本命：${l.stem}${l.el}・${n.level}（幫身 ${n.ratio}%）`,`用神 ${n.use}、喜神 ${n.like}、忌神 ${n.avoid}`,`推薦水晶：${a.map((e=>e.name)).join("、")}`,e.hour<0?"（沒有出生時辰，只用年月日三柱計算）":"","※ 純屬參考，水晶配戴以喜歡、舒服為主。"].filter(Boolean).join("\n")}function G(){e("adminBar").hidden=!1;let t="self";try{t="proxy"===localStorage.getItem("wx-mode")?"proxy":"self"}catch{}"proxy"===t&&R("proxy")}async function _(){try{const t=JSON.parse(localStorage.getItem("wx-input")||"null");t&&("lunar"===t.cal&&document.querySelector('[data-cal="lunar"]').click(),e("y").value=t.y,E(),e("m").value=t.m,M(),e("d").value=t.d,e("leap").checked=!!t.leap,e("name").value=t.name||"",e("hours").querySelector(`[data-h="${t.hour}"]`)?.click(),t.time&&(e("time").value=t.time,e("time").oninput()))}catch{}if(o)try{if(await liff.init({liffId:a}),!liff.isLoggedIn())return void liff.login({redirectUri:location.href});if(!e("name").value)try{e("name").placeholder="例如："+(await liff.getProfile()).displayName}catch{}const t=await N({mode:"crystals"});Array.isArray(t?.items)&&t.items.length&&(u=t.items),t?.admin&&G()}catch{}else new URLSearchParams(location.search).has("admin")&&G()}e("q").oninput=()=>{clearTimeout(O);const t=e("q").value.trim();e("listAll").setAttribute("aria-expanded","false"),t?O=setTimeout((()=>B(t)),350):U()},e("listAll").onclick=()=>{"true"!==e("listAll").getAttribute("aria-expanded")?(e("q").value="",e("listAll").setAttribute("aria-expanded","true"),B("")):U()},e("copy").onclick=async()=>{if(!f)return;const t=D(f,v,x);try{await navigator.clipboard.writeText(t),e("copy").textContent="已複製"}catch{window.prompt("複製下面的文字",t)}setTimeout((()=>e("copy").textContent="複製結果，貼給客人"),2e3)},e("next").onclick=()=>{F(),window.scrollTo({top:0,behavior:"smooth"})},_();
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const LIFF_ID = '2012526991-K2po91Aa';
+const HOOK = 'crystal-whispers-wuxing';
+const OA_ID = '@992tgwyb';
+const IS_PROD = location.hostname.endsWith('github.io');
+const HOSTS = ['https://idly-junction-altitude.ngrok-free.dev'];
+
+async function postHook(path, body) {
+  let err;
+  let start = 0;
+  try { start = Math.max(0, HOSTS.indexOf(sessionStorage.getItem('n8n-host'))); } catch {}
+  for (let i = 0; i < HOSTS.length; i++) {
+    const host = HOSTS[(start + i) % HOSTS.length];
+    try {
+      const res = await fetch(host + '/webhook/' + path, body);
+      if (i < HOSTS.length - 1 && res.status >= 502 && res.status <= 504) { err = res; continue; }
+      try { sessionStorage.setItem('n8n-host', host); } catch {}
+      return res;
+    } catch (e) {
+      if (e && e.name === 'AbortError') throw e;
+      err = e;
+    }
+  }
+  if (err instanceof Response) return err;
+  throw err;
+}
+
+const EL_VAR = { 木: '--wood', 火: '--fire', 土: '--earth', 金: '--metal', 水: '--water' };
+const elColor = e => `var(${EL_VAR[e]})`;
+
+const DEFAULT_CRYSTALS = [
+  { el: '木', name: '綠幽靈', text: '事業、貴人' },
+  { el: '木', name: '綠東陵', text: '安定、好運' },
+  { el: '木', name: '橄欖石', text: '自信、正向' },
+  { el: '火', name: '粉晶', text: '人緣、愛情' },
+  { el: '火', name: '紫水晶', text: '直覺、平靜' },
+  { el: '火', name: '紅瑪瑙', text: '活力、勇氣' },
+  { el: '土', name: '黃水晶', text: '財運、自信' },
+  { el: '土', name: '黃虎眼', text: '專注、決斷' },
+  { el: '土', name: '茶晶', text: '穩定、放鬆' },
+  { el: '金', name: '白水晶', text: '淨化、專注' },
+  { el: '金', name: '鈦晶', text: '魄力、正財' },
+  { el: '金', name: '月光石', text: '溫柔、直覺' },
+  { el: '水', name: '黑曜石', text: '守護、穩定' },
+  { el: '水', name: '海藍寶', text: '溝通、平靜' },
+  { el: '水', name: '青金石', text: '智慧、表達' },
+];
+let crystalsList = DEFAULT_CRYSTALS;
+
+// 主題切換
+const SUN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const MOON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $('theme').innerHTML = t === 'dark' ? SUN_SVG : MOON_SVG;
+  $('theme').setAttribute('aria-label', t === 'dark' ? '切換淺色模式' : '切換深色模式');
+}
+let theme = 'light';
+try { theme = localStorage.getItem('wx-theme') === 'dark' ? 'dark' : 'light'; } catch {}
+applyTheme(theme);
+$('theme').onclick = () => {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  applyTheme(theme);
+  try { localStorage.setItem('wx-theme', theme); } catch {}
+};
+
+// 狀態
+let cal = 'solar';
+let hourVal = -1;
+let lastCalc = null;
+let lastCrystals = [];
+let lastName = '';
+let mode = 'self'; // 'self' | 'friend' | 'proxy'
+let chosenCust = null;
+let viewingIdx = -1; // -1 = 本人, >=0 = friendsRecords[idx]
+
+const LS_SELF = 'wx-self-record';
+const LS_FRIENDS = 'wx-friends-records';
+
+function loadSelfRecord() {
+  try { return JSON.parse(localStorage.getItem(LS_SELF) || 'null'); } catch { return null; }
+}
+function saveSelfRecord(rec) {
+  try { localStorage.setItem(LS_SELF, JSON.stringify(rec)); } catch {}
+}
+function loadFriendsRecords() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(LS_FRIENDS) || '[]');
+    return Array.isArray(arr) ? arr : [];
+  } catch { return []; }
+}
+function saveFriendsRecords(arr) {
+  try { localStorage.setItem(LS_FRIENDS, JSON.stringify(arr)); } catch {}
+}
+
+// 日期選單
+const now = new Date();
+function fillSelect(sel, start, end, fmt, defVal) {
+  const prev = defVal ?? sel.value;
+  sel.innerHTML = '';
+  for (let i = start; i <= end; i++) sel.add(new Option(fmt(i), i));
+  if (prev && +prev >= start && +prev <= end) sel.value = prev;
+}
+const LUNAR_DAYS = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+const LUNAR_MONTHS = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '臘'];
+function updateDays() {
+  const y = +$('y').value, m = +$('m').value;
+  const maxD = cal === 'solar' ? new Date(y, m, 0).getDate() : 30;
+  fillSelect($('d'), 1, maxD, i => cal === 'solar' ? i + ' 日' : LUNAR_DAYS[i - 1]);
+}
+function updateMonths() {
+  fillSelect($('m'), 1, 12, i => cal === 'solar' ? i + ' 月' : LUNAR_MONTHS[i - 1] + '月');
+  updateDays();
+}
+fillSelect($('y'), 1930, now.getFullYear(), i => i + ' 年', 1990);
+$('y').onchange = updateDays;
+$('m').onchange = updateDays;
+document.querySelectorAll('[data-cal]').forEach(btn => {
+  btn.onclick = () => {
+    cal = btn.dataset.cal;
+    document.querySelectorAll('[data-cal]').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    $('leapRow').hidden = cal !== 'lunar';
+    updateMonths();
+  };
+});
+updateMonths();
+
+// 時辰按鈕
+$('hours').innerHTML = WuXing.HOURS.map((h, i) =>
+  `<button type="button" data-h="${i}" aria-pressed="false"><b>${h.name}</b><small>${h.range} 點</small></button>`
+).join('') + '<button type="button" class="unknown" data-h="-1" aria-pressed="true"><b>不知道時辰</b><small>只用年月日計算</small></button>';
+
+$('hours').querySelectorAll('button').forEach(btn => {
+  btn.onclick = () => {
+    hourVal = +btn.dataset.h;
+    $('time').value = '';
+    $('hours').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    checkDst();
+  };
+});
+$('time').oninput = () => {
+  if ($('time').value) {
+    $('hours').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  }
+  checkDst();
+};
+
+const getInput = () => ({
+  y: +$('y').value,
+  m: +$('m').value,
+  d: +$('d').value,
+  lunar: cal === 'lunar',
+  leap: $('leap').checked,
+  hour: hourVal,
+  time: $('time').value,
+});
+
+function checkDst() {
+  let res = null;
+  try { res = WuXing.calc({ ...getInput(), hour: -1, time: '' }); } catch {}
+  const hasDst = !!res?.dst;
+  $('dstHint').hidden = !hasDst;
+  if (hasDst) {
+    $('dstHint').textContent = `這天在${res.dst}期間，當時時鐘比標準時間快 1 小時。填「幾點幾分」會自動扣回；只選時辰的話，請選扣掉 1 小時後的時辰。`;
+  }
+}
+['y', 'm', 'd', 'leap'].forEach(id => $(id).addEventListener('change', checkDst));
+
+// 雷達圖
+function drawRadar(res) {
+  const maxPct = Math.max(...WuXing.ELS.map(e => res.pct[e])) || 1;
+  const pt = (idx, r) => {
+    const rad = (72 * idx - 90) * Math.PI / 180;
+    return [r * Math.cos(rad), r * Math.sin(rad)];
+  };
+  const pts = WuXing.ELS.map((e, i) => pt(i, 92 * Math.max(res.pct[e] / maxPct, 0.04)));
+  const svg = $('radar');
+  svg.classList.remove('on');
+  svg.innerHTML =
+    [1 / 3, 2 / 3, 1].map(k => `<polygon class="grid" points="${WuXing.ELS.map((_, i) => pt(i, 92 * k).map(n => n.toFixed(1)).join(',')).join(' ')}"/>`).join('') +
+    WuXing.ELS.map((_, i) => {
+      const [x, y] = pt(i, 92);
+      return `<line class="axis" x1="0" y1="0" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;
+    }).join('') +
+    `<g class="shape-g"><polygon class="shape" points="${pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ')}"/></g>` +
+    WuXing.ELS.map((e, i) => {
+      const [px, py] = pts[i];
+      const [lx, ly] = pt(i, 118);
+      return `<circle class="pt" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4.5" style="fill:${elColor(e)}"/>
+        <text class="el" x="${lx.toFixed(1)}" y="${(ly - 7).toFixed(1)}" style="fill:${elColor(e)}">${e}</text>
+        <text class="pc" x="${lx.toFixed(1)}" y="${(ly + 9).toFixed(1)}">${res.pct[e]}%</text>`;
+    }).join('');
+  svg.querySelectorAll('.pt').forEach(el => {
+    el.style.opacity = 0;
+    el.style.transition = 'opacity .3s .6s';
+  });
+  setTimeout(() => {
+    svg.classList.add('on');
+    svg.querySelectorAll('.pt').forEach(el => { el.style.opacity = 1; });
+  }, 40);
+}
+
+// 渲染親友切換列
+function renderFriendChips(viewMode) {
+  const selfRec = loadSelfRecord();
+  const friends = loadFriendsRecords();
+  if (viewMode === 'proxy' || (!selfRec && !friends.length)) {
+    $('friendsBox').hidden = true;
+    return;
+  }
+  if (!friends.length) {
+    $('friendsBox').hidden = true;
+    return;
+  }
+  $('friendsBox').hidden = false;
+  $('friendsCountText').textContent = `你曾幫 ${friends.length} 位親友測過（點名字可切換查看）：`;
+  let html = '';
+  if (selfRec) {
+    html += `<button type="button" class="chip" data-fidx="-1" aria-current="${viewingIdx === -1 ? 'true' : 'false'}">我的五行${selfRec.name ? `（${esc(selfRec.name)}）` : ''}</button>`;
+  }
+  friends.forEach((fr, idx) => {
+    html += `<button type="button" class="chip" data-fidx="${idx}" aria-current="${viewingIdx === idx ? 'true' : 'false'}">${esc(fr.name || '親友 ' + (idx + 1))}</button>`;
+  });
+  $('friendChips').innerHTML = html;
+  $('friendChips').querySelectorAll('button').forEach(btn => {
+    btn.onclick = () => {
+      const idx = +btn.dataset.fidx;
+      if (idx === -1 && selfRec) {
+        viewingIdx = -1;
+        showSavedRecord(selfRec, 'self');
+      } else if (friends[idx]) {
+        viewingIdx = idx;
+        showSavedRecord(friends[idx], 'friend');
+      }
+    };
+  });
+}
+
+// 渲染結果頁
+function renderResult(res, name, viewMode, opts = {}) {
+  const isFriend = viewMode === 'friend';
+  const isProxy = viewMode === 'proxy';
+  const subject = name ? esc(name) : (isFriend ? '對方' : '你');
+  const whoText = isFriend || isProxy ? `${subject} 的` : (name ? `${esc(name)}，你的` : '你的');
+  const weakPart = res.missing.length
+    ? `，<b style="color:${elColor(res.weak)}">${res.missing.join('、')}</b>幾乎沒有`
+    : `，<b style="color:${elColor(res.weak)}">${res.weak}</b>比較少`;
+
+  $('summary').innerHTML = `${whoText}五行<b style="color:${elColor(res.strong)}">${res.strong}</b>最旺${weakPart}。`;
+  drawRadar(res);
+
+  $('hourNote').hidden = res.hour >= 0;
+  $('dstNote').hidden = !res.dst;
+  $('dstNote').textContent = res.dst
+    ? (res.corrected
+        ? `這天在${res.dst}期間，出生時間 ${res.clock} 已扣回 1 小時，以 ${res.corrected} 計算。`
+        : `這天在${res.dst}期間，時鐘快 1 小時；請確認選的是扣回後的時辰。`)
+    : '';
+
+  const dm = res.dayMaster;
+  $('dmTitle').textContent = isFriend ? `${name || '對方'}的本命特質` : isProxy ? '他的本命特質' : '你的本命特質';
+  $('dm').innerHTML = `<div class="stone" style="background:${elColor(dm.el)}">${dm.stem}</div>
+    <div><p><b>${dm.stem}${dm.el}</b>：${esc(dm.text)}</p><small>以出生那天的天干為本命，代表一個人的核心氣質。</small></div>`;
+
+  const p = res.power;
+  const favs = [p.use, p.like].filter((e, i, a) => e && a.indexOf(e) === i);
+  const st = p.story || { tag: '五行平衡分析', lead: '', body: p.why, end: `適合加強的五行為：${favs.join('、')}。` };
+
+  $('power').innerHTML = `
+    <div class="aha-box">
+      <span class="aha-badge">${esc(st.tag)}</span>
+      ${st.lead ? `<p>${esc(st.lead)}</p>` : ''}
+      <p>${esc(st.body)}</p>
+      <p class="aha-end">${esc(st.end)}</p>
+    </div>
+    <p class="fav-title">${isFriend ? '最適合為他補充的平衡五行' : '最適合你的平衡五行'}</p>
+    <div class="gods">${favs.map(el => `
+      <div class="god">
+        <small>平衡五行</small>
+        <b style="color:${elColor(el)}">${el}</b>
+        <span>${esc(WuXing.MEANING[el] || '')}</span>
+      </div>`).join('')}
+    </div>`;
+
+  $('crystalTitle').innerHTML = `${isFriend ? `適合送 ${esc(name || '他')} 的水晶` : '適合你的水晶'}<span class="tag">依平衡五行：${favs.join('、')}</span>`;
+  const recs = favs.flatMap((el, idx) => crystalsList.filter(c => c.el === el).slice(0, idx === 0 ? 3 : 2));
+  $('crystals').innerHTML = recs.map(c => `<div class="crystal">
+    <div class="dot" style="${c.image ? `background-image:url('${esc(c.image)}')` : `background:${elColor(c.el)}`}"></div>
+    <div><b>${esc(c.name)}<span class="tag">${c.el}</span></b><small>${esc(c.text)}</small></div>
+  </div>`).join('') + `<p class="note">${favs.map(e => `${e}代表${WuXing.MEANING[e]}`).join('；')}。</p>`;
+
+  const askMsg = isFriend
+    ? `我想幫「${name || '親友'}」挑水晶！他的生日五行：${res.strong}最旺、${res.weak}比較少，本命${dm.stem}${dm.el}，適合加強${favs.join('、')}，想請 Sammi 推薦適合送他的水晶。`
+    : `我的生日五行：${res.strong}最旺、${res.weak}比較少，本命${dm.stem}${dm.el}，適合加強${favs.join('、')}，想請 Sammi 推薦適合我的水晶。`;
+  $('ask').href = `https://line.me/R/oaMessage/${OA_ID}/?${encodeURIComponent(askMsg)}`;
+  $('ask').textContent = isFriend ? `問 Sammi 適合送「${name || '他'}」的水晶` : '問 Sammi 適合我的水晶';
+
+  $('pillars').innerHTML = res.pillars.map(p =>
+    `<div><small>${p.label}柱</small><span style="color:${elColor(WuXing.STEM_EL[p.gz[0]])}">${p.gz[0]}</span><span>${p.gz[1]}</span></div>`
+  ).join('');
+  $('dateLine').textContent = `國曆 ${res.solar}・農曆 ${res.lunarText}・${res.clock ? res.clock + '（' + res.hourName + '）' : res.hourName}`;
+
+  // 頂部模式列與動作按鈕
+  if (isProxy) {
+    $('viewBar').hidden = true;
+    $('selfActions').hidden = true;
+    $('proxyActions').hidden = false;
+  } else {
+    const selfRec = loadSelfRecord();
+    $('proxyActions').hidden = true;
+    $('selfActions').hidden = false;
+    $('viewBar').hidden = false;
+    if (isFriend) {
+      $('viewBarText').textContent = `🎁 ${name || '親友'} 的五行分析（送禮參考）`;
+      $('viewBarBtn').textContent = selfRec ? '← 回去看我的' : '測自己的五行';
+      $('backSelfBtn').hidden = !selfRec;
+      $('goFriend').textContent = '🎁 再幫另一位朋友測';
+    } else {
+      $('viewBarText').textContent = `✨ ${name ? name + ' 的' : '你的'}專屬五行檔案`;
+      $('viewBarBtn').textContent = '🎁 幫其他人測';
+      $('backSelfBtn').hidden = true;
+      $('goFriend').textContent = '🎁 幫其他人測五行（挑禮物參考）';
+    }
+  }
+
+  renderFriendChips(viewMode);
+  $('result').hidden = false;
+  if (!opts.noScroll) {
+    $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  return recs;
+}
+
+function showSavedRecord(rec, viewMode) {
+  let res;
+  try {
+    res = WuXing.calc(rec.input);
+  } catch { return false; }
+  $('f').hidden = true;
+  lastCalc = res;
+  lastName = rec.name || '';
+  lastCrystals = renderResult(res, lastName, viewMode, { noScroll: true });
+  $('status').textContent = '';
+  return true;
+}
+
+function getIdToken() {
+  try { return liff.getIDToken() || ''; } catch { return ''; }
+}
+async function callApi(params) {
+  const res = await postHook(HOOK, { method: 'POST', body: new URLSearchParams({ ...params, t: getIdToken() }) });
+  if (!res.ok) throw res.status;
+  return res.json();
+}
+
+async function saveToServer(res, name, input, recs, extra) {
+  if (!IS_PROD) {
+    $('status').textContent = '（本機預覽，不會送到伺服器）';
+    return;
+  }
+  $('status').textContent = '保存中…';
+  try {
+    await callApi({
+      mode: 'save',
+      name: name,
+      cal: input.lunar ? (input.leap ? '農曆閏月' : '農曆') : '國曆',
+      birth: `${input.y}-${input.m}-${input.d}`,
+      solar: res.solar,
+      hour: res.hourName,
+      bazi: res.pillars.map(p => p.gz).join(' '),
+      day_master: res.dayMaster.stem + res.dayMaster.el,
+      pct: WuXing.ELS.map(e => `${e} ${res.pct[e]}%`).join('、'),
+      wood: res.pct.木, fire: res.pct.火, earth: res.pct.土, metal: res.pct.金, water: res.pct.水,
+      strong: res.strong, weak: res.weak,
+      crystals: recs.map(c => c.name).join('、'),
+      time: res.clock,
+      dst: res.dst ? (res.corrected ? `${res.dst}，已扣回 1 小時（${res.corrected}）` : res.dst) : '',
+      level: res.power.level, ratio: res.power.ratio,
+      use: res.power.use, like: res.power.like, avoid: res.power.avoid,
+      ...extra,
+    });
+    if (extra.proxy === '1') {
+      $('status').textContent = chosenCust ? `已保存，記在「${chosenCust.name || chosenCust.line}」名下。` : '已保存（沒有選名冊裡的客人，只記稱呼）。';
+    } else if (extra.measure_type === 'friend') {
+      $('status').textContent = `已記錄「${name}」的分析，這也是你幫第 ${extra.friend_seq} 位親友測驗喔！`;
+    } else {
+      $('status').textContent = '已建立你的專屬五行檔案，下次打開可直接查看。';
+    }
+  } catch {
+    $('status').textContent = '結果已經算好，但這次沒有同步到雲端。';
+  }
+}
+
+// 表單重置與切換模式
+const DEF_YEAR = 1990;
+function resetFormFields() {
+  $('f').reset();
+  document.querySelector('[data-cal="solar"]').click();
+  $('y').value = DEF_YEAR;
+  $('m').value = 1;
+  updateDays();
+  $('d').value = 1;
+  $('hours').querySelector('[data-h="-1"]').click();
+  $('err').hidden = true;
+  $('status').textContent = '';
+  setChosenCust(null);
+  $('q').value = '';
+  clearSearch();
+}
+
+function enterMode(nextMode) {
+  mode = nextMode;
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === nextMode)));
+  const isProxy = nextMode === 'proxy';
+  const isFriend = nextMode === 'friend';
+  const isSelf = nextMode === 'self';
+
+  $('picker').hidden = !isProxy;
+  $('proxySaveRow').hidden = !isProxy;
+  $('friendFormBar').hidden = !isFriend;
+  $('selfOnceHint').hidden = !isSelf;
+  $('consentRow').hidden = isProxy || isFriend;
+
+  if (isProxy) {
+    $('nameLabel').innerHTML = '客人稱呼<small>選了客人會自動帶入，可以改</small>';
+    $('name').placeholder = '例如：小美';
+    $('go').textContent = '排這位客人的五行';
+    $('heroLine').textContent = '幫客人排五行，結果可複製給客人';
+    $('f').hidden = false;
+    $('result').hidden = true;
+    resetFormFields();
+  } else if (isFriend) {
+    $('nameLabel').innerHTML = '怎麼稱呼對方<small class="req">必填</small>';
+    $('name').placeholder = '例如：媽媽、男友、閨蜜小美';
+    $('go').textContent = '幫他測五行';
+    $('heroLine').textContent = '幫身邊的人測五行，挑禮物更有方向';
+    $('f').hidden = false;
+    $('result').hidden = true;
+    resetFormFields();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    $('nameLabel').innerHTML = '怎麼稱呼你<small>選填</small>';
+    $('name').placeholder = '例如：小美';
+    $('go').textContent = '看我的五行';
+    $('heroLine').textContent = '輸入生日，看五行平衡與專屬水晶';
+    const selfRec = loadSelfRecord();
+    if (selfRec && showSavedRecord(selfRec, 'self')) {
+      viewingIdx = -1;
+    } else {
+      $('f').hidden = false;
+      $('result').hidden = true;
+    }
+  }
+  if (isProxy || isSelf) {
+    try { localStorage.setItem('wx-mode', isProxy ? 'proxy' : 'self'); } catch {}
+  }
+}
+
+// 送出表單
+$('f').onsubmit = async ev => {
+  ev.preventDefault();
+  $('err').hidden = true;
+  const name = $('name').value.trim();
+  if (mode === 'friend' && !name) {
+    $('err').textContent = '請先輸入對方的暱稱或稱呼，方便之後查看紀錄喔！';
+    $('err').hidden = false;
+    $('name').focus();
+    return;
+  }
+
+  const input = getInput();
+  let res;
+  try {
+    res = WuXing.calc(input);
+  } catch {
+    $('err').textContent = cal === 'lunar' ? '這個農曆日期不存在，請檢查月份或閏月。' : '這個日期不存在，請再檢查一次。';
+    $('err').hidden = false;
+    return;
+  }
+
+  if (mode === 'self') {
+    const rec = { name, input, at: Date.now() };
+    saveSelfRecord(rec);
+    viewingIdx = -1;
+    $('f').hidden = true;
+    lastCalc = res;
+    lastName = name;
+    lastCrystals = renderResult(res, name, 'self');
+    if ($('consent').checked) {
+      saveToServer(res, name, input, lastCrystals, { measure_type: 'self', friend_seq: '0' });
+    }
+  } else if (mode === 'friend') {
+    const friends = loadFriendsRecords();
+    const rec = { name, input, at: Date.now() };
+    friends.push(rec);
+    saveFriendsRecords(friends);
+    viewingIdx = friends.length - 1;
+    $('f').hidden = true;
+    lastCalc = res;
+    lastName = name;
+    lastCrystals = renderResult(res, name, 'friend');
+    saveToServer(res, name, input, lastCrystals, { measure_type: 'friend', friend_seq: String(friends.length) });
+  } else {
+    lastCalc = res;
+    lastName = name;
+    lastCrystals = renderResult(res, name, 'proxy');
+    if ($('proxySave').checked) {
+      saveToServer(res, name, input, lastCrystals, { proxy: '1', cust_uid: chosenCust?.uid || '', cust_line: chosenCust?.line || '' });
+    } else {
+      $('status').textContent = '這次沒有保存。';
+    }
+  }
+};
+
+// 按鈕互動
+$('goFriend').onclick = () => enterMode('friend');
+$('cancelFriend').onclick = () => enterMode('self');
+$('backSelfBtn').onclick = () => enterMode('self');
+$('viewBarBtn').onclick = () => {
+  if (mode === 'friend') enterMode('self');
+  else enterMode('friend');
+};
+
+$('share').onclick = async () => {
+  const url = LIFF_ID ? `https://liff.line.me/${LIFF_ID}` : location.href;
+  try {
+    if (IS_PROD && liff.isApiAvailable('shareTargetPicker')) {
+      await liff.shareTargetPicker([{ type: 'text', text: `我剛測了生日五行，原來不是缺什麼補什麼！你也來看看自己的五行平衡：\n${url}` }]);
+      return;
+    }
+  } catch {}
+  try {
+    await navigator.clipboard.writeText(url);
+    $('share').textContent = '已複製連結';
+  } catch {
+    $('share').textContent = url;
+  }
+  setTimeout(() => { $('share').textContent = '分享給朋友測測看'; }, 2000);
+};
+
+// 管理者選客人
+function setChosenCust(cust) {
+  chosenCust = cust;
+  $('chosen').hidden = !cust;
+  $('finder').hidden = !!cust;
+  if (cust) {
+    clearSearch();
+    $('q').value = '';
+    $('chosenName').textContent = cust.name && cust.line && cust.name !== cust.line ? `${cust.name}（LINE：${cust.line}）` : (cust.name || cust.line);
+    $('name').value = cust.name || cust.line;
+  }
+}
+document.querySelectorAll('[data-mode]').forEach(btn => {
+  btn.onclick = () => enterMode(btn.dataset.mode);
+});
+$('unchoose').onclick = () => {
+  setChosenCust(null);
+  $('name').value = '';
+  $('q').focus();
+};
+
+let searchTimer = 0, searchSeq = 0;
+function clearSearch() {
+  searchSeq++;
+  clearTimeout(searchTimer);
+  $('found').innerHTML = '';
+  $('listAll').setAttribute('aria-expanded', 'false');
+}
+async function searchCustomers(q) {
+  const seq = ++searchSeq;
+  $('found').innerHTML = '<li class="empty">搜尋中…</li>';
+  let items = [];
+  try {
+    items = IS_PROD
+      ? ((await callApi({ mode: 'search', q })).items || [])
+      : [{ name: '王小美', line: '小美🌸', uid: 'U-demo-1' }, { name: '', line: 'Amy', uid: 'U-demo-2' }].filter(c => !q || (c.name + c.line).includes(q));
+  } catch {
+    if (seq === searchSeq) $('found').innerHTML = '<li class="empty">名冊讀不到，可以先不選，直接填稱呼。</li>';
+    return;
+  }
+  if (seq !== searchSeq) return;
+  $('found').innerHTML = items.length
+    ? items.map((c, i) => `<li><button type="button" data-i="${i}"><b>${esc(c.name || c.line)}</b>${c.name && c.line ? `<small>LINE：${esc(c.line)}</small>` : ''}</button></li>`).join('')
+    : `<li class="empty">${q ? '名冊裡找不到，可以不選，直接填稱呼。' : '名冊裡還沒有客人。'}</li>`;
+  $('found').querySelectorAll('button').forEach(btn => {
+    btn.onclick = () => setChosenCust(items[+btn.dataset.i]);
+  });
+}
+$('q').oninput = () => {
+  clearTimeout(searchTimer);
+  const val = $('q').value.trim();
+  $('listAll').setAttribute('aria-expanded', 'false');
+  if (val) searchTimer = setTimeout(() => searchCustomers(val), 350);
+  else clearSearch();
+};
+$('listAll').onclick = () => {
+  if ($('listAll').getAttribute('aria-expanded') !== 'true') {
+    $('q').value = '';
+    $('listAll').setAttribute('aria-expanded', 'true');
+    searchCustomers('');
+  } else {
+    clearSearch();
+  }
+};
+
+function formatCopyText(res, name, recs) {
+  const p = res.power, dm = res.dayMaster;
+  const favs = [p.use, p.like].filter((e, i, a) => e && a.indexOf(e) === i);
+  return [
+    `【生日五行】${name || ''}`.trim(),
+    `國曆 ${res.solar}・農曆 ${res.lunarText}・${res.clock ? res.clock + '（' + res.hourName + '）' : res.hourName}`,
+    `八字：${res.pillars.map(x => x.gz).join(' ')}`,
+    `五行：${WuXing.ELS.map(e => `${e} ${res.pct[e]}%`).join('、')}（${res.strong}最旺，${res.weak}較少）`,
+    `本命：${dm.stem}${dm.el}`,
+    `平衡五行：${favs.join('、')}`,
+    p.story ? p.story.end : '',
+    `推薦水晶：${recs.map(c => c.name).join('、')}`,
+    res.hour < 0 ? '（沒有出生時辰，只用年月日三柱計算）' : '',
+    '※ 純屬參考，水晶配戴以眼緣、喜歡與舒服為主。',
+  ].filter(Boolean).join('\n');
+}
+$('copy').onclick = async () => {
+  if (!lastCalc) return;
+  const txt = formatCopyText(lastCalc, lastName, lastCrystals);
+  try {
+    await navigator.clipboard.writeText(txt);
+    $('copy').textContent = '已複製';
+  } catch {
+    window.prompt('複製下面的文字', txt);
+  }
+  setTimeout(() => { $('copy').textContent = '複製結果，貼給客人'; }, 2000);
+};
+$('next').onclick = () => {
+  resetFormFields();
+  $('result').hidden = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+function enableAdmin() {
+  $('adminBar').hidden = false;
+  let m = 'self';
+  try { m = localStorage.getItem('wx-mode') === 'proxy' ? 'proxy' : 'self'; } catch {}
+  if (m === 'proxy') enterMode('proxy');
+}
+
+async function init() {
+  // 檢查是否已經有本人的五行檔案
+  const selfRec = loadSelfRecord();
+  if (selfRec) {
+    viewingIdx = -1;
+    showSavedRecord(selfRec, 'self');
+  }
+
+  if (IS_PROD) {
+    try {
+      await liff.init({ liffId: LIFF_ID });
+      if (!liff.isLoggedIn()) {
+        liff.login({ redirectUri: location.href });
+        return;
+      }
+      if (!selfRec && !$('name').value) {
+        try { $('name').placeholder = '例如：' + (await liff.getProfile()).displayName; } catch {}
+      }
+      const data = await callApi({ mode: 'crystals' });
+      if (Array.isArray(data?.items) && data.items.length) crystalsList = data.items;
+      if (data?.admin) enableAdmin();
+    } catch {}
+  } else if (new URLSearchParams(location.search).has('admin')) {
+    enableAdmin();
+  }
+}
+init();

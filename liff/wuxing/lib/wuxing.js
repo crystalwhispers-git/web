@@ -60,8 +60,67 @@
   }
   var SEASON = { 寅: '木', 卯: '木', 辰: '土', 巳: '火', 午: '火', 未: '土', 申: '金', 酉: '金', 戌: '土', 亥: '水', 子: '水', 丑: '土' };
 
+  // ===== 寓教於樂：用大自然比喻解釋「為什麼不直接缺什麼補什麼」 =====
+  var NATURE_WEAK = {
+    木: '你的本命屬「木」，就像一株正在紮根成長的樹木。當本身能量還不夠強壯時，最忌諱急著拿剪刀修剪（金），或過度開花結果、抓土消耗養分（火、土）；這時候最需要的是「水」來澆灌滋養，以及「木」來穩固根基，先把底氣養足，自然枝繁葉茂。',
+    火: '你的本命屬「火」，就像一盞溫暖的火苗。當火勢還不夠旺時，若直接澆水（水）或拿去鍛燒礦石、烘烤大地（金、土），反而會把熱量耗盡；這時候最需要的是「木」來添柴助燃，以及「火」來匯聚光芒，讓溫暖的能量先穩定燃燒起來。',
+    土: '你的本命屬「土」，就像一片溫厚的大地。當土壤還比較鬆散時，若種滿大樹（木）、大水沖刷（水）或過度開採礦石（金），土地反而負荷太重；這時候最需要的是「火」的陽光溫暖，以及「土」來厚實地基，先把根基穩固好，才能承載萬物。',
+    金: '你的本命屬「金」，就像一塊珍貴的礦石。當礦石還在孕育、質地較薄時，不宜直接用烈火鍛燒（火）或過度淘洗消耗（水、木）；這時候最需要的是「土」的大地孕育包覆（土生金），以及「金」的同類礦脈凝聚，先讓質地飽滿堅實，自然會發光。',
+    水: '你的本命屬「水」，就像一道清澈的溪流。當水源還不夠充沛時，若被太多泥土堵住（土）或急著去灌溉大片森林（木、火），很容易讓自己乾涸；這時候最需要的是「金」的礦脈水源滋養（金生水），以及「水」來匯聚能量，先把水庫裝滿，走得才長遠。',
+  };
+  var NATURE_STRONG = {
+    木: '你的本命屬「木」，而且枝葉非常茂盛、能量充沛！就像一棵已經長得很壯的大樹，這時候如果再一直澆水（水）反而容易積水；最需要的是陽光讓它開花結果（火）、寬廣的土地去紮根伸展（土），或是適度修剪枝葉（金），讓滿滿的生命力發揮出來。',
+    火: '你的本命屬「火」，而且熱力十足、能量充沛！就像一團旺盛的火焰，如果再一直丟木柴（木）進去只會太過燥熱；這時候最需要的是大地來收納轉化熱能（土）、鍛造出珍貴的成果（金），或是溫和的水氣來調節降溫（水），讓熱情變得穩定又持久。',
+    土: '你的本命屬「土」，就像一座厚實穩固的高山！因為根基已經非常飽滿，若再一直堆土只會顯得沉悶；這時候最需要的是展現大地蘊藏的礦石寶藏（金）、清泉流動帶來靈活與財氣（水），或是樹木疏通土壤帶來生機（木），讓能量活絡起來。',
+    金: '你的本命屬「金」，就像質地堅硬飽滿的礦石與珠寶！因為金氣已經很充足，再一直堆疊反而顯得剛硬；這時候最需要的是清泉洗滌讓光芒流動（水）、適度淬煉成器（火），或是發揮決斷力的舞台（木），讓你的才華與魅力被看見。',
+    水: '你的本命屬「水」，就像水量充沛的江河大海！因為水勢已經很滿，若再一直加水反而容易滿溢；這時候最需要的是去灌溉樹木、發揮才華（木）、陽光映照帶來溫暖行動力（火），或是穩固河道把能量聚集成踏實的成果（土）。',
+  };
+  function buildStory(D, level, useEl, likeEl, weak, missing, tiao) {
+    var favs = [useEl, likeEl].filter(function (e, i, a) { return e && a.indexOf(e) === i; });
+    var isDiff = favs.indexOf(weak) < 0;
+    var weakText = missing && missing.length ? '幾乎沒有「' + missing.join('、') + '」' : '「' + weak + '」佔比最少';
+    var tag, lead, body, end;
+    if (level === '從強') {
+      tag = '能量飽滿凝聚・宜順勢加乘';
+      lead = isDiff
+        ? '很多人挑水晶習慣「缺什麼補什麼」，看到自己' + weakText + '就想直接補它。但八字看的是整體氣場的流向！'
+        : '挑選水晶不是單純湊齊數字，而是要順著你天生的能量優勢去加強。';
+      body = '你的命盤非常特別，幾乎所有能量都凝聚在本命「' + D + '」與生助你的力量上。這就像一股強大純粹的自然氣流，如果硬拿相剋的五行去擋它，反而會造成能量衝撞。';
+      end = '順著你天生的優勢，佩戴「' + favs.join('、') + '」系水晶來順勢加乘，反而最順遂自在！';
+    } else if (level === '從弱') {
+      tag = '能量靈活柔和・宜順勢借力';
+      lead = isDiff
+        ? '很多人挑水晶習慣「缺什麼補什麼」，看到自己' + weakText + '就想直接補它。但八字講究的是順應整體的氣場！'
+        : '挑選水晶不是單純把少的補滿，而是要看哪股能量最能帶動你的運勢。';
+      body = '你的命盤屬於非常靈活的「順勢型」格局，就像懂得借力使力的衝浪手——不需要硬撐著跟海浪對抗，順著命盤裡最旺、最順暢的能量去流動，反而最輕鬆好運。';
+      end = '因此最適合你的是「' + favs.join('、') + '」系水晶，幫你順勢借力、事半功倍！';
+    } else if (level === '身強' || level === '中和偏強') {
+      tag = '能量充沛・宜疏通發揮';
+      lead = isDiff
+        ? '很多人以為八字少什麼就要補什麼，看到上方圖表' + weakText + '，就會想直接買「' + weak + '」系水晶。其實看五行就像調養體質，不是數字少就硬塞喔！'
+        : '一般人常說「缺什麼補什麼」，但其實要先確認那個較少的五行，是不是你本命真正需要的能量！';
+      body = NATURE_STRONG[D];
+      end = isDiff
+        ? '所以比起單純補最少的「' + weak + '」，你真正需要的是能幫你疏通並發揮能量的「' + favs.join('、') + '」系水晶！'
+        : '而你命盤中較少的「' + weak + '」，剛好就是能幫你疏通並發揮能量的關鍵拼圖，非常適合透過「' + favs.join('、') + '」系水晶來平衡！';
+    } else {
+      tag = '能量偏弱・宜滋養充電';
+      lead = isDiff
+        ? '很多人以為八字少什麼就要補什麼，看到上方圖表' + weakText + '，就會想直接買「' + weak + '」系水晶。其實看五行就像調養體質，不能只看哪格數字少就硬補喔！'
+        : '一般人常說「缺什麼補什麼」，但其實要先確認那個較少的五行，是不是能滋養你本命的能量！';
+      body = NATURE_WEAK[D];
+      end = isDiff
+        ? '所以比起去補最少的「' + weak + '」，現在最適合你的是能幫你充電滋養的「' + favs.join('、') + '」系水晶！'
+        : '而你命盤中較少的「' + weak + '」，剛好就是能幫你充電滋養的關鍵能量，非常適合透過「' + favs.join('、') + '」系水晶來補足底氣！';
+    }
+    if (tiao) {
+      end += '（另外，你出生在' + (tiao.indexOf('冬') === 0 ? '冬季，氣場偏寒，也很適合搭配一點「火」系水晶來溫暖氣場。' : '夏季，氣場偏燥，也很適合搭配一點「水」系水晶來溫潤氣場。') + '）';
+    }
+    return { tag: tag, lead: lead, body: body, end: end, isDiff: isDiff };
+  }
+
   // ===== 滴天髓旺衰法（扶抑）：看日主得不得令、有沒有根、同類（比劫＋印）占多少，決定身強身弱與用神 =====
-  function strength(pillars, score, D) {
+  function strength(pillars, score, D, weak, missing) {
     var G = groups(D);
     var monthBr = pillars[1].gz[1], mEl = STEM_EL[HIDDEN[monthBr][0]];
     var season = mEl === D ? '旺' : GEN[mEl] === D ? '相' : GEN[D] === mEl ? '休' : CTRL[D] === mEl ? '囚' : '死';
@@ -99,9 +158,11 @@
     var pct = function (e) { return score[e] / (total + 1) * 100; };
     if ('亥子丑'.indexOf(monthBr) >= 0 && pct('火') < 10) tiao = '冬天出生、命局偏寒，另外喜「火」來暖局。';
     if ('巳午未'.indexOf(monthBr) >= 0 && pct('水') < 10) tiao = '夏天出生、命局偏燥，另外喜「水」來潤局。';
+    var story = buildStory(D, level, G[use], G[like], weak || '', missing || [], tiao);
     return {
       level: level, ratio: Math.round(ratio * 1000) / 10, season: season, deLing: deLing, roots: roots,
       use: G[use], useGod: use, like: G[like], likeGod: like, avoid: G[avoid], avoidGod: avoid, why: why, tiao: tiao, groups: G,
+      story: story,
     };
   }
 
@@ -157,6 +218,7 @@
     ELS.forEach(function (e) { pct[e] = Math.round(score[e] / total * 1000) / 10; });
     var order = ELS.slice().sort(function (a, b) { return score[b] - score[a]; });
     var dayStem = pillars[2].gz[0];
+    var missing = ELS.filter(function (e) { return pct[e] < 5; });
     return {
       solar: ymd,
       lunarText: (lunar.getYearInGanZhi() + '年 ' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()).replace(/闰/g, '閏').replace(/腊/g, '臘'),
@@ -167,9 +229,9 @@
       strong: order[0],
       weak: order[4],
       weak2: order[3],
-      missing: ELS.filter(function (e) { return pct[e] < 5; }),
+      missing: missing,
       dayMaster: { stem: dayStem, el: STEM_EL[dayStem], text: DAY_MASTER[dayStem] },
-      power: strength(pillars, score, STEM_EL[dayStem]),
+      power: strength(pillars, score, STEM_EL[dayStem], order[4], missing),
     };
   }
 
