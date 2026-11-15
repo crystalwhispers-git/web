@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.line-scdn.net https://liffsdk.line-scdn.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://idly-junction-altitude.ngrok-free.dev https://hook.us2.make.com https://api.line.me https://*.line.me https://*.line-scdn.net https://uts-front.line-apps.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>Threads 貼文產生器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+:root {
+--bg: #F3F1EE;
+--card: #FFFFFF;
+--ink: #1D2230;
+--muted: #6B6F7B;
+--line: #E2DED8;
+--accent: #E5432F;
+--focus: #2F5BD3;
+--body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+--bg: #15171D; --card: #1F222B; --ink: #ECEAE6; --muted: #9DA1AC; --line: #2E323D; --accent: #FF6450; --focus: #8EAAFF; color-scheme: dark } }
+:root[data-theme="dark"] {
+--bg: #15171D; --card: #1F222B; --ink: #ECEAE6; --muted: #9DA1AC; --line: #2E323D; --accent: #FF6450; --focus: #8EAAFF; color-scheme: dark }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 520px; margin: 0 auto; padding-block: 20px 48px;
+padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-direction: column; gap: 4px; }
+h1 { font-weight: 900; font-size: 28px; line-height: 1.2; margin: 0; }
+.sub { color: var(--muted); margin: 0; font-size: 14px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+label, .label { font-weight: 700; font-size: 14px; display: flex; justify-content: space-between; margin-bottom: 6px; }
+.count { font-weight: 400; color: var(--muted); }
+textarea { display: block; width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--bg);
+border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; resize: vertical; }
+textarea:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.go { font: inherit; font-weight: 700; font-size: 17px; border: 0; border-radius: 12px; padding: 14px; cursor: pointer; background: var(--accent); color: #fff; }
+.go:disabled, .ghost:disabled { opacity: .55; cursor: default; }
+.ghost { font: inherit; font-size: 14px; background: none; border: 1px solid var(--line); color: var(--ink); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row .go { flex: 1; font-size: 15px; padding: 11px; }
+.status { font-size: 13px; color: var(--muted); min-height: 1.2em; margin: 0; }
+.status.err { color: var(--accent); }
+.saved-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+.saved-row span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo { width: 28px; height: 28px; flex: none; }
+.count.over { color: var(--accent); font-weight: 700; }
+.core p { margin: 0; color: var(--muted); }
+.foot { color: var(--muted); font-size: 12px; text-align: center; margin: 0; }
+.tabs .chip { font-size: 15px; padding: 8px 18px; }
+.tip { color: var(--muted); font-size: 13px; margin: 0; }
+.near { margin-top: 8px; }
+.draft-list { display: flex; flex-direction: column; gap: 12px; }
+.draft-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--bg); cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
+.draft-card.active { border: 2px solid var(--focus); }
+.draft-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+.badge { background: var(--card); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; font-size: 12px; color: var(--ink); }
+.badge.cat { background: var(--ink); color: var(--bg); font-weight: 700; border-color: var(--ink); }
+.draft-title { font-weight: 700; font-size: 15px; margin: 0; }
+.draft-summary { font-size: 13px; color: var(--muted); margin: 0; }
+.draft-preview { font-size: 14px; color: var(--ink); white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="head"><div class="brand"><svg class="logo" viewBox="0 0 24 24" role="img" aria-label="Threads" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg><h1>Threads 貼文產生器</h1></div>
+<div class="chips" id="theme" role="group" aria-label="主題配色">
+<button type="button" class="chip" data-v="light" aria-pressed="false">淺色</button>
+<button type="button" class="chip" data-v="dark" aria-pressed="false">深色</button>
+</div></div>
+<p class="sub" id="sub">輸入一個想法，選好結尾形式，馬上拿到排好段落的內文，改好一鍵複製貼到 Threads。</p>
+</header>
+<div class="chips tabs" id="tab" role="group" aria-label="功能">
+<button type="button" class="chip" data-v="post" aria-pressed="true">寫貼文</button>
+<button type="button" class="chip" data-v="reply" aria-pressed="false">回覆留言</button>
+<button type="button" class="chip" id="patrolTabBtn" data-v="patrol" aria-pressed="false" hidden>📰 時事草稿</button>
+</div>
+<section class="box" id="patrolForm" hidden>
+<div class="row" style="justify-content:space-between">
+<span class="label" style="margin:0">每日 07:00／11:00／19:00 自動海巡 3 篇</span>
+<div class="row">
+<button class="ghost" id="pRefresh" type="button">🔄 重整</button>
+<button class="ghost" id="pGo" type="button">🔍 立即海巡 3 篇</button>
+</div>
+</div>
+<p class="status" id="pstatus" aria-live="polite"></p>
+<div id="draftList" class="draft-list"></div>
+</section>
+<section class="box" id="replyForm" hidden>
+<div>
+<label for="post">對方的貼文或留言</label>
+<textarea id="post" rows="6" placeholder="把對方的文字整段貼上"></textarea>
+</div>
+<div>
+<span class="label" id="toneLabel">回覆方式</span>
+<div class="chips" id="tone" role="group" aria-labelledby="toneLabel">
+<button type="button" class="chip" data-v="打氣" aria-pressed="true">打氣</button>
+<button type="button" class="chip" data-v="見解" aria-pressed="false">有見解的回應</button>
+</div>
+</div>
+<div>
+<span class="label" id="rlenLabel">回覆字數</span>
+<div class="chips" id="rlen" role="group" aria-labelledby="rlenLabel">
+<button type="button" class="chip" data-v="50" aria-pressed="false">50 字</button>
+<button type="button" class="chip" data-v="100" aria-pressed="false">100 字</button>
+<button type="button" class="chip" data-v="200" aria-pressed="true">200 字</button>
+<button type="button" class="chip" data-v="300" aria-pressed="false">300 字</button>
+</div>
+</div>
+<button class="go" id="rgo" type="button">產生回覆</button>
+<p class="status" id="rstatus" aria-live="polite"></p>
+<p class="tip">回覆前改一兩句，加進你自己的話；短時間大量留言，可能被 Threads 當成垃圾訊息。</p>
+</section>
+<section class="box" id="postForm">
+<div>
+<label for="idea">你的想法</label>
+<textarea id="idea" rows="3" placeholder="想講什麼，一兩句話就好"></textarea>
+</div>
+<div>
+<span class="label" id="styleLabel">文體</span>
+<div class="chips" id="style" role="group" aria-labelledby="styleLabel">
+<button type="button" class="chip" data-v="道理" aria-pressed="true">講道理（具體邏輯）</button>
+<button type="button" class="chip" data-v="感受" aria-pressed="false">講感受</button>
+<button type="button" class="chip" data-v="實戰" aria-pressed="false">實戰拆解（條列做法）</button>
+</div>
+</div>
+<div>
+<span class="label" id="formLabel">排版</span>
+<div class="chips" id="form" role="group" aria-labelledby="formLabel">
+<button type="button" class="chip" data-v="行" aria-pressed="true">一行一行</button>
+<button type="button" class="chip" data-v="段落" aria-pressed="false">段落書寫</button>
+</div>
+</div>
+<div>
+<span class="label" id="hookLabel">破題形式</span>
+<div class="chips" id="hook" role="group" aria-labelledby="hookLabel">
+<button type="button" class="chip" data-v="反直覺" aria-pressed="true">反直覺</button>
+<button type="button" class="chip" data-v="問句" aria-pressed="false">問句</button>
+<button type="button" class="chip" data-v="數字" aria-pressed="false">數字或對比</button>
+<button type="button" class="chip" data-v="自白" aria-pressed="false">自白</button>
+</div>
+</div>
+<div>
+<span class="label" id="endLabel">結尾形式</span>
+<div class="chips" id="end" role="group" aria-labelledby="endLabel">
+<button type="button" class="chip" data-v="直述句" aria-pressed="false">直述句</button>
+<button type="button" class="chip" data-v="疑問句" aria-pressed="true">疑問句</button>
+<button type="button" class="chip" data-v="二選一" aria-pressed="false">二選一</button>
+<button type="button" class="chip" data-v="呼籲" aria-pressed="false">呼籲</button>
+<button type="button" class="chip" data-v="留白" aria-pressed="false">留白</button>
+</div>
+</div>
+<div>
+<span class="label" id="voiceLabel">人稱</span>
+<div class="chips" id="voice" role="group" aria-labelledby="voiceLabel">
+<button type="button" class="chip" data-v="我" aria-pressed="false">第一人稱：我</button>
+<button type="button" class="chip" data-v="你" aria-pressed="true">對朋友說：你</button>
+<button type="button" class="chip" data-v="他" aria-pressed="false">講別人的事情：他</button>
+</div>
+</div>
+<div>
+<span class="label" id="lenLabel">內文字數</span>
+<div class="chips" id="len" role="group" aria-labelledby="lenLabel">
+<button type="button" class="chip" data-v="50" aria-pressed="true">50 字內</button>
+<button type="button" class="chip" data-v="100" aria-pressed="false">100 字</button>
+<button type="button" class="chip" data-v="300" aria-pressed="false">300 字</button>
+<button type="button" class="chip" data-v="500" aria-pressed="false">500 字（Threads 上限）</button>
+</div>
+</div>
+<button class="go" id="go" type="button">產生貼文</button>
+<p class="status" id="status" aria-live="polite"></p>
+</section>
+<section class="box" id="result" hidden>
+<p class="tip" id="modelTag" hidden></p>
+<p class="tip" id="newsInfo" hidden></p>
+<div class="core" id="coreBox"><span class="label">這篇的主旨（不會複製，只給你檢查方向）</span><p id="core"></p></div>
+<div>
+<label for="caption"><span id="captionLabel">內文</span> <span class="count" id="count"></span></label>
+<textarea id="caption" rows="10"></textarea>
+<div class="row near">
+<button class="go" id="copy" type="button">複製內文</button>
+<button class="go" id="pubThreads" type="button" hidden style="background:#2f5d50">🚀 發送到 Threads</button>
+</div>
+<p class="tip">按複製或發送時會記下這個版本，之後 AI 會參考你最近改過的定稿，越用越像你。</p>
+</div>
+<div id="commentBox">
+<label for="comment">一樓留言（發文後自己留在第一則，網址放這裡）</label>
+<textarea id="comment" rows="3"></textarea>
+<div class="row"><button class="ghost" id="copyComment" type="button">複製一樓留言</button></div>
+</div>
+<div class="row">
+<button class="ghost" id="save" type="button">存檔</button>
+</div>
+<p class="status" id="saved" aria-live="polite"></p>
+</section>
+<div class="row"><button class="ghost" id="savedBtn" type="button">我的紀錄</button></div>
+<div class="box" id="savedList" hidden></div>
+<p class="foot">內容由 AI 產生，發布前請自己看過一遍，不符合事實的地方要改掉。本工具並非 Threads 或 Meta 官方產品。</p>
+</div>
+<script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
+<script src="app.js?v=20261115-2"></script>
+</body>
+</html>
