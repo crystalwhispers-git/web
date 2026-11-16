@@ -47,7 +47,9 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .item .tx { padding: 10px 12px 12px; display: grid; gap: 2px; }
 .item h2 { margin: 0; font-size: .95rem; line-height: 1.35; }
 .price { color: var(--brand); font-weight: 700; }
-.item.sold { opacity: .7; }
+.item.sold { opacity: .5; }
+.item.sold img { filter: grayscale(1); }
+.item.sold .tx h2, .item.sold .price { color: var(--sold); }
 .msg { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px 16px; text-align: center; color: var(--muted); }
 .msg h2 { margin: 0 0 6px; color: var(--ink); font-size: 1.05rem; }
 .sheet { position: fixed; inset: 0; background: rgba(20,14,28,.45); display: grid; align-items: end; z-index: 10; }
@@ -192,6 +194,6 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
-<script src="app.js?v=20261115-cats"></script>
+<script src="app.js?v=20261116-spec"></script>
 </body>
 </html>
