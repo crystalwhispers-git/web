@@ -102,6 +102,8 @@ select, input[type="text"] { width: 100%; height: 44px; padding: 0 12px; border:
 .crystal b { display: block; }
 .crystal small { color: var(--muted); }
 .note { font-size: .78rem; color: var(--muted); margin: 0; }
+.dst-pick { display: grid; gap: 4px; font-size: .84rem; padding: 8px 12px; border-radius: 12px; background: var(--brand-soft); }
+.dst-pick input { accent-color: var(--brand); }
 .disclaimer { border-top: 1px solid var(--line); padding-top: 10px; line-height: 1.55; }
 .actions { display: grid; gap: 8px; }
 .ghost { height: 44px; border: 1.5px solid var(--line); border-radius: 999px; background: none; color: var(--ink); font-weight: 700; font-size: .92rem; text-decoration: none; display: grid; place-items: center; }
@@ -198,8 +200,13 @@ input, select, textarea { font-size: 16px !important; }
 <div class="hours" id="hours" role="group" aria-label="出生時辰"></div>
 <label class="exact">知道幾點幾分？<input type="time" id="time" aria-label="確切出生時間"></label>
 <p class="note" id="dstHint" hidden></p>
+<div class="dst-pick" id="dstPickRow" hidden role="radiogroup" aria-label="時鐘撥回的那一小時">
+<label><input type="radio" name="dstPick" value="first"> 第一次（還在夏令時間）</label>
+<label><input type="radio" name="dstPick" value="second"> 第二次（撥回之後）</label>
+</div>
 </div>
 <label class="consent" id="consentRow"><input type="checkbox" id="consent" checked> <span>保存這次的生日與結果，讓 Sammi 為我推薦適合的水晶</span></label>
+<label class="consent" id="friendSaveRow" hidden><input type="checkbox" id="friendSave"> <span>也保存給 Sammi 參考（請先取得對方同意；沒勾就只存在這支手機）</span></label>
 <label class="consent" id="proxySaveRow" hidden><input type="checkbox" id="proxySave" checked> <span>保存到「生日五行紀錄」（選了客人就記在客人名下）</span></label>
 <p class="err" id="err" role="alert" hidden></p>
 <button class="cta" id="go" type="submit">看我的五行</button>
@@ -244,7 +251,7 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
-<script src="lib/wuxing.js?v=20261116-r"></script>
-<script src="app.js?v=20261116-r"></script>
+<script src="lib/wuxing.js?v=20261116-s"></script>
+<script src="app.js?v=20261116-s"></script>
 </body>
 </html>

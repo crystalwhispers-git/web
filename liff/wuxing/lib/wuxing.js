@@ -54,6 +54,23 @@
     for (var i = 0; i < DST.length; i++) if (ymd >= DST[i][0] && ymd <= DST[i][1]) return DST[i][0] < '1946' ? '日治時期東京時間' : '夏令時間';
     return '';
   }
+  // 切換當下（2026-11-16，依 IANA Asia/Taipei 查證）：
+  //   開始日 00:00 直接跳到 01:00 → 00:00–00:59 不存在
+  //   台灣夏令結束日 23:59 撥回 23:00 → 23:00–23:59 走兩次（第一次夏令、第二次標準）
+  //   日治東京時間 1945-09-21 01:00 撥回 00:00 → 9/21 的 00:00–00:59 走兩次
+  // 回傳 { label, state }：state = on（要扣 1 小時）／off／nonexist（不存在）／ambiguous（走兩次）
+  function dstAt(ymd, h) {
+    if (ymd === '1945-09-21') return h === 0 ? { label: '日治時期東京時間', state: 'ambiguous' } : { label: '', state: 'off' };
+    for (var i = 0; i < DST.length; i++) {
+      var P = DST[i];
+      if (ymd < P[0] || ymd > P[1]) continue;
+      var label = P[0] < '1946' ? '日治時期東京時間' : '夏令時間';
+      if (ymd === P[0] && h === 0) return { label: label, state: 'nonexist' };
+      if (ymd === P[1] && h === 23 && P[0] >= '1946') return { label: label, state: 'ambiguous' };
+      return { label: label, state: 'on' };
+    }
+    return { label: '', state: 'off' };
+  }
   var hourIndex = function (h) { return h === 23 ? 12 : h === 0 ? 0 : Math.floor((h + 1) / 2); };
 
   // ===== 十神分組：以日主五行為中心 =====
@@ -184,10 +201,18 @@
     }
     var ymd = solarDay.getYear() + '-' + pad(solarDay.getMonth()) + '-' + pad(solarDay.getDay());
     var dst = dstOf(ymd), exact = /^\d{1,2}:\d{2}$/.test(input.time || '') ? input.time : '';
-    var solar, clock = '', corrected = '';
+    var solar, clock = '', corrected = '', dstAmbiguous = false, dstPick = '';
     if (exact) {
       var hm = exact.split(':').map(Number);
       clock = pad(hm[0]) + ':' + pad(hm[1]);
+      // 有確切時間：依切換當下判斷要不要扣（不存在的時間報錯；走兩次的時間看 dstPick，沒選就當第一次＝夏令並標暫估）
+      var at = dstAt(ymd, hm[0]);
+      if (at.state === 'nonexist') { var ne = new Error('這個時間不存在'); ne.code = 'dst-nonexist'; ne.label = at.label; throw ne; }
+      if (at.state === 'ambiguous') {
+        dstAmbiguous = true;
+        dstPick = input.dstPick === 'second' ? 'second' : 'first';
+        dst = dstPick === 'first' ? at.label : '';
+      } else dst = at.state === 'on' ? at.label : '';
       // 夏令時間：減 1 小時（可能跨回前一天）
       var t = new Date(Date.UTC(solarDay.getYear(), solarDay.getMonth() - 1, solarDay.getDay(), hm[0], hm[1]) - (dst ? 3600e3 : 0));
       solar = L.Solar.fromYmdHms(t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate(), t.getUTCHours(), t.getUTCMinutes(), 0);
@@ -237,13 +262,16 @@
       missing: missing,
       low: low,
       jieDay: jieDay,
-      tentative: hour < 0 || (!!jieDay && !exact),
+      // 夏令期間只選時辰：扣 1 小時一定跨兩個時辰，也標暫估；走兩次的時間沒選第幾次也是暫估
+      tentative: hour < 0 || (!!jieDay && !exact) || (!!dst && !exact) || (dstAmbiguous && input.dstPick !== 'first' && input.dstPick !== 'second'),
+      dstAmbiguous: dstAmbiguous,
+      dstPick: dstPick,
       dayMaster: { stem: dayStem, el: STEM_EL[dayStem], text: DAY_MASTER[dayStem] },
       power: strength(pillars, score, STEM_EL[dayStem], order[4], missing),
     };
   }
 
-  var api = { calc: calc, HOURS: HOURS, ELS: ELS, MEANING: MEANING, STEM_EL: STEM_EL, HIDDEN: HIDDEN, dstOf: dstOf, groups: groups };
+  var api = { calc: calc, HOURS: HOURS, ELS: ELS, MEANING: MEANING, STEM_EL: STEM_EL, HIDDEN: HIDDEN, dstOf: dstOf, dstAt: dstAt, groups: groups };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.WuXing = api;
 })(typeof self !== 'undefined' ? self : this);
