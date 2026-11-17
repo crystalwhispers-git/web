@@ -101,6 +101,9 @@ select, input[type="text"] { width: 100%; height: 44px; padding: 0 12px; border:
 .crystal .dot { width: 44px; height: 44px; border-radius: 12px; background-size: cover; background-position: center; }
 .crystal b { display: block; }
 .crystal small { color: var(--muted); }
+a.crystal { color: inherit; text-decoration: none; grid-template-columns: 44px 1fr auto; }
+a.crystal:active { opacity: .7; }
+.crystal .more-go { font-size: 13px; color: var(--muted); white-space: nowrap; }
 .note { font-size: .78rem; color: var(--muted); margin: 0; }
 .dst-pick { display: grid; gap: 4px; font-size: .84rem; padding: 8px 12px; border-radius: 12px; background: var(--brand-soft); }
 .dst-pick input { accent-color: var(--brand); }
@@ -270,7 +273,7 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
-<script src="lib/wuxing.js?v=20261116-t"></script>
-<script src="app.js?v=20261116-t"></script>
+<script src="lib/wuxing.js?v=20261118-a"></script>
+<script src="app.js?v=20261118-a"></script>
 </body>
 </html>
