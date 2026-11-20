@@ -130,7 +130,7 @@ a.crystal:active { opacity: .7; }
 .qa { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
 .qa summary { font-weight: 700; color: var(--ink); font-size: .92rem; }
 .qa p { font-size: .9rem; margin: 8px 0 0; }
-.qa .aha-box { margin-top: 8px; }
+.qa .aha-box, .persona .aha-box { margin-top: 8px; }
 details.more summary { font-weight: 700; }
 .disclaimer { border-top: 1px solid var(--line); padding-top: 10px; line-height: 1.55; }
 .actions { display: grid; gap: 8px; }
@@ -246,6 +246,7 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 <p class="summary" id="summary"></p>
 <p class="note" id="hourNote" hidden></p>
+<p class="note" id="dstNote" hidden></p>
 <svg class="radar" id="radar" viewBox="-140 -132 280 268" role="img" aria-label="五行加權分布雷達圖"></svg>
 <div class="bars" id="bars" role="img" aria-label="五行比例長條圖"></div>
 <h2 id="dmTitle">你的本命特質</h2>
@@ -268,13 +269,7 @@ input, select, textarea { font-size: 16px !important; }
 <small id="friendsCountText">你曾幫親友測過的紀錄（點名字可切換查看）：</small>
 <div class="chips" id="friendChips"></div>
 </div>
-<details class="more">
-<summary>看詳細分析（八字）</summary>
-<p class="note" id="dstNote" hidden></p>
-<div class="pillars" id="pillars"></div>
-<p class="note" id="dateLine" style="text-align:center;margin-top:8px"></p>
-</details>
-<h2>常見問答</h2>
+<h2 id="faqTitle">常見問答</h2>
 <div class="faq" id="faq"></div>
 <p class="note disclaimer">※ 純屬參考：本工具結合傳統八字藏干加權與五行平衡邏輯提供初步建議，命理各家算法不同，不等同完整命盤論斷；水晶配戴以眼緣、喜歡與舒服為主。</p>
 </section>
@@ -283,6 +278,6 @@ input, select, textarea { font-size: 16px !important; }
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
 <script src="lib/wuxing.js?v=20261118-c"></script>
-<script src="app.js?v=20261121-order"></script>
+<script src="app.js?v=20261121-layout"></script>
 </body>
 </html>
