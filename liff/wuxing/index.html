@@ -91,6 +91,12 @@ select, input[type="text"] { width: 100%; height: 44px; padding: 0 12px; border:
 .radar text { font-family: var(--display); text-anchor: middle; dominant-baseline: central; }
 .radar .el { font-size: 17px; font-weight: 700; }
 .radar .pc { font-family: var(--body); font-size: 11px; fill: var(--muted); }
+.bars { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 24px 1fr 42px; align-items: center; gap: 10px; }
+.bar-el { font-family: var(--display); font-size: 1.05rem; font-weight: 700; text-align: center; }
+.bar-track { height: 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.bar-pct { font-size: .84rem; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
 .tag { display: inline-block; font-size: .72rem; padding: 0 8px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); margin-left: 6px; vertical-align: .1em; font-weight: 500; }
 .dm { display: flex; gap: 12px; align-items: center; background: var(--bg); padding: 12px; border-radius: 14px; }
 .dm .stone { flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-family: var(--display); font-size: 1.5rem; }
@@ -240,10 +246,12 @@ input, select, textarea { font-size: 16px !important; }
 </div>
 <p class="summary" id="summary"></p>
 <p class="note" id="hourNote" hidden></p>
-<h2 id="rankTitle">最適合你的平衡五行</h2>
-<div class="ranks" id="ranks"></div>
+<svg class="radar" id="radar" viewBox="-140 -132 280 268" role="img" aria-label="五行加權分布雷達圖"></svg>
+<div class="bars" id="bars" role="img" aria-label="五行比例長條圖"></div>
 <h2 id="personaTitle">你的五行組合</h2>
 <div class="persona" id="persona"></div>
+<h2 id="rankTitle">最適合你的平衡五行</h2>
+<div class="ranks" id="ranks"></div>
 <div class="actions" id="proxyActions" hidden>
 <button type="button" class="cta" id="copy">複製結果，貼給客人</button>
 <button type="button" class="ghost" id="next">排下一位客人</button>
@@ -259,8 +267,7 @@ input, select, textarea { font-size: 16px !important; }
 <div class="chips" id="friendChips"></div>
 </div>
 <details class="more">
-<summary>看詳細分析（五行分布、本命、八字）</summary>
-<svg class="radar" id="radar" viewBox="-140 -132 280 268" role="img" aria-label="五行加權分布雷達圖"></svg>
+<summary>看詳細分析（本命、八字）</summary>
 <p class="note" id="dstNote" hidden></p>
 <h2 id="dmTitle">你的本命特質</h2>
 <div class="dm" id="dm"></div>
@@ -276,6 +283,6 @@ input, select, textarea { font-size: 16px !important; }
 <script src="https://static.line-scdn.net/liff/edge/versions/2.31.2/sdk.js"></script>
 <script src="lib/lunar.min.js"></script>
 <script src="lib/wuxing.js?v=20261118-c"></script>
-<script src="app.js?v=20261118-c"></script>
+<script src="app.js?v=20261121-order"></script>
 </body>
 </html>
